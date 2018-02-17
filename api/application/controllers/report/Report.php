@@ -13,12 +13,6 @@ class Report extends MY_Controller {
         $this->load->model("core/CoreModel", "coreObj");
     }
 
-//    public function brokenLinkReport() {
-//        $this->load->view('navigation/header');
-//        $this->load->view('navigation/navigation');
-//        $this->load->view('reports/brokenlink_report_view');
-//    }
-
     public function getSourceList() {
         $sourceList = $this->modelObj->getSourceList();
         echo json_encode($sourceList);
@@ -48,6 +42,10 @@ class Report extends MY_Controller {
         $updateId = $this->input->post("id");
         unset($dataArr['repassword']);
         if ($updateId != null && $updateId != '') {
+            $prevData = $this->modelObj->getDataBeforeUpdate($updateId);
+            if(isset($dataArr['link_status']) && isset($prevData['link_status']) && $dataArr['link_status']=='COMPLETED' && $prevData['link_status'] !='COMPLETED'){
+                $dataArr['completed_date'] = date("Y-m-d");
+            }
             $updateResult = $this->modelObj->updateLinkReport($dataArr, $updateId);
             echo json_encode($updateResult);
         }

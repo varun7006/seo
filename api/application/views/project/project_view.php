@@ -57,7 +57,7 @@
                                                                         </div>
                                                                     </div>
                                                                 <?php } ?>
-                                                                 <div class="row">
+                                                                <div class="row">
                                                                     <div class="element-form">
                                                                         <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Comment</label></div>
                                                                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -132,6 +132,8 @@
                                                                 <span ng-show="orderByField == 'client_name'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
                                                             </th>
                                                             <th>Comment</th>
+                                                            <th>Completed Links</th>
+                                                            <th>Broken Links</th>
                                                             <th>All Source List</th>                                                       
                                                             <th>Action</th>
                                                         </tr>
@@ -154,6 +156,12 @@
                                                             <td ng-click="editProject(project, $index)">
                                                                 <span ng-hide="project.editMode">{{project.comment}}</span>
                                                                 <input ng-show="project.editMode" type="text" name="firstName" ng-show="project.editMode" class="form-control" ng-model="project.comment" placeholder="Project" required="" />
+                                                            </td>
+                                                            <td>
+                                                                <span ng-hide="project.editMode">{{project.completed_links}}</span>
+                                                            </td>
+                                                            <td>
+                                                                <span ng-hide="project.editMode">{{project.broken_links}}</span>
                                                             </td>
                                                             <td>
                                                                 <table style="background: none;">

@@ -16,11 +16,20 @@ class ProjectModel extends CI_Model {
         if ($projectCount > 0) {
             foreach ($result as $key => $value) {
                 $result[$key]['sourcedetails'] = $this->getTotalProjectSources($value['id']);
+                $result[$key]['completed_links'] = $this->getTotalCompletedLinks($value['id']);
+                $result[$key]['broken_links'] = $this->getTotalBrokenLinks($value['id']);
             }
             return array("status" => "SUCCESS", "value" => array("list" => $result, "count" => $projectCount), "message" => "Project List is present");
         } else {
             return array("status" => "ERR", "value" => array(), "message" => "No project Found");
         }
+    }
+    
+     public function getTotalBrokenLinks($projectId) {
+        $query= "SELECT count(`a`.`id`) as link_count FROM `broken_links_details` as `a` LEFT JOIN `project_details` as `b` ON `a`.`project_id` = `b`.`id` WHERE DATEDIFF(CURDATE(),`a`.`last_online_date`) > '31' AND `a`.`type`='OFFLINE' AND `b`.`status`='TRUE' AND `a`.project_id='$projectId'";     
+        $result = $this->db->query($query)->row_array();
+       
+        return $result['link_count'];
     }
 
     public function getTotalProjectSources($projectId) {
@@ -35,6 +44,14 @@ class ProjectModel extends CI_Model {
         } else {
             return array("count" => 0, "sourcelist" => []);
         }
+    }
+    
+    public function getTotalCompletedLinks($projectId) {
+        $query ="SELECT count(a.id) as completed_count FROM `link_status_report` as `a` JOIN `project_details` as `b` ON `b`.`id`=`a`.`project_id` WHERE `a`.`project_id` = '$projectId' AND MONTH(a.completed_date) = MONTH(CURDATE()) AND `a`.`status` = 'TRUE' AND `a`.`link_status` = 'COMPLETED'";
+       
+        $result = $this->db->query($query)->row_array();
+        return $result['completed_count'];
+       
     }
 
     public function saveNewProjectDetails($dataArr) {

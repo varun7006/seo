@@ -262,17 +262,12 @@
                                                                  <span ng-hide="sources.editMode">{{ sources.comment}}</span>
                                                                 <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.comment" placeholder="First Name" required="" />
                                                             </td>
-                                                            <!--<td><button class="btn btn-mini btn-success" ng-click="sendSourceEmailToClient(source, $index)" >Send</button></td>-->
-                                                            <!--<td  ng-click="sendSourceEmailToClient(source, $index)">Send</td>-->
 
                                                             <td>
                                                                 <button ng-hide="sources.editMode" class="btn btn-mini btn-primary" ng-click="editSource(sources, $index)" ><i class="fa fa-edit"></i></button>
                                                                 <button ng-hide="sources.editMode" class="btn btn-mini btn-danger" ng-click="deleteSource(sources.id, $index)" id="sa-warning"><i class="fa fa-close"></i></button>
                                                                 <button ng-show="sources.editMode" class="btn btn-xs btn-primary" ng-click="updateSourceDetails(sources)" >Update</button>
                                                                 <button ng-show="sources.editMode" class="btn btn-xs btn-danger" ng-click="cancelSource(sources)" id="sa-warning">Cancel</button>
-
-                                                            <!--<button style="width: 20 px !important; " class="btn btn-mini btn-primary" ng-click="editSource(source, $index)" ><i class="fa fa-edit"></i></button>-->
-                                                            <!--<button style="width: 20 px !important; " class="btn btn-mini btn-danger" ng-click="deleteSource(source.id, $index)" id="sa-warning"><i class="fa fa-close"></i></button>-->
                                                             </td>
                                                         </tr>
                                                     </tbody>

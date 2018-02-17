@@ -8,16 +8,22 @@ class SourceApi extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
+        $this->load->model("report/ReportModel", "reportObj");
     }
 
     public function checkSourceStatus() {
-        $website = "https://www.vi.com/";
-        $checkStatus = $this->url_test($website);
-        if (!$checkStatus) {
-            echo $website . " is down!";
-        }else{
-            echo $website . " is up!";
+        $sourceList = $this->reportObj->getSourceList();
+        if ($sourceList['status'] == 'SUCCESS' && $sourceList['value']['count'] > 0) {
+            foreach ($sourceList['value']['list'] as $key => $value) {
+                if (!$checkStatus) {
+                    echo $website . " is down!";
+                } else {
+                    echo $website . " is up!";
+                }
+            }
         }
+
+        $checkStatus = $this->url_test($website);
     }
 
     public function url_test($url) {
@@ -32,7 +38,7 @@ class SourceApi extends CI_Controller {
         if (( $http_code == "200" ) || ( $http_code == "302" )) {
             return true;
         } else {
-        // return $http_code;, possible too
+            // return $http_code;, possible too
             return false;
         }
         curl_close($ch);
