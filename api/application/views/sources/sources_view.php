@@ -90,7 +90,7 @@
                                                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Which Project?</label></div>
                                                             <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
                                                                 <div class="form-group">
-                                                                     <select class="form-control" data-placeholder="Choose Project" ng-model="source.project_id">
+                                                                    <select class="form-control" data-placeholder="Choose Project" ng-model="source.project_id" multiple>
                                                                         <option value="">Select</option>
                                                                         <option ng-repeat="project in projectList track by $index" ng-selected="project.id == source.project_id" value="{{project.id}}">{{project.project_name}}</option>
                                                                     </select>
@@ -219,19 +219,19 @@
                                                     <tbody>
                                                         <tr ng-repeat="sources in sourceList| orderBy:orderByField:reverseSort |  filter: searchfield track by $index">
                                                             <td>{{ $index + 1}}</td>
-                                                            <td>
+                                                            <td ng-click="editSource(sources, $index)">
                                                                 <span ng-hide="sources.editMode" ng-mouseover="getIframeSrc(sources.exact_link)"><a href="{{ sources.exact_link }}" target="_blank" >{{ sources.source_link}}</a><div class="box"><iframe src="{{ iframeLink }}" width = "200px" height = "200px"></iframe></div></span>
                                                                 <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.source_link" placeholder="Source Link" required="" />
                                                             </td>
-                                                            <td>
+                                                            <td ng-click="editSource(sources, $index)">
                                                                 <span ng-hide="sources.editMode"><a href="mailto:{{ sources.email}}">{{ sources.email}}</a></span>
                                                                 <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.email" placeholder="Email" required="" />
                                                             </td>
-                                                            <td>
+                                                            <td ng-click="editSource(sources, $index)">
                                                                 <span ng-hide="sources.editMode">{{ sources.name}}</span>
                                                                 <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.name" placeholder="Name" required="" />
                                                             </td>
-                                                            <td>
+                                                            <td ng-click="editSource(sources, $index)">
                                                                 <span ng-hide="sources.editMode">{{ sources.topics}}</span>
                                                                 <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.topics" placeholder="Topics" required="" />
                                                             </td>
@@ -244,21 +244,21 @@
                                                             <td>
                                                                 <span ng-hide="sources.editMode">{{ sources.moz_rank}}</span>
                                                             </td>
-                                                            <td>
+                                                            <td ng-click="editSource(sources, $index)">
                                                                 <span ng-hide="sources.editMode">{{ sources.project_name}}</span>
                                                                 <select ng-show="sources.editMode" class="form-control" data-placeholder="Choose Project" ng-model="sources.project_id">
                                                                     <option value="">Select</option>
                                                                     <option ng-repeat="project in projectList track by $index" ng-selected="project.id == sources.project_id" value="{{project.id}}">{{project.project_name}}</option>
                                                                 </select>
                                                             </td>
-                                                            <td>
+                                                            <td ng-click="editSource(sources, $index)">
                                                                 <span ng-hide="sources.editMode">{{ sources.link_type | lowercase }}</span>
                                                                 <select ng-show="sources.editMode" class="form-control" data-placeholder="Choose Link Type" ng-model="sources.link_type">
                                                                         <option value="">Select</option>
                                                                         <option ng-repeat="links in linkTypes track by $index" ng-selected="links.id == sources.link_type" value="{{links.id}}">{{ links.name }}</option>
                                                                      </select>
                                                             </td>
-                                                            <td>
+                                                            <td ng-click="editSource(sources, $index)">
                                                                  <span ng-hide="sources.editMode">{{ sources.comment}}</span>
                                                                 <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.comment" placeholder="First Name" required="" />
                                                             </td>

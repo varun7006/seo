@@ -7,6 +7,8 @@
     function linkStatusReportCtrl($scope, $http, $state, $stateParams) {
         $scope.project_id = atob($stateParams.project_id);
         $scope.source_type = $stateParams.source_type
+        $scope.linkTypes = [];
+        $scope.linkTypesCount = 0;
         $scope.sourceReport = [];
         $scope.mainProject = "";
         $scope.searchfield = "";
@@ -17,7 +19,7 @@
         $scope.reverseSort = false;
         $scope.showNew = false;
         $scope.saveType = "SAVE";
-        $scope.source = {'project_id': $scope.project_id, 'backlink': '', 'date': '', 'email': '', 'anchor': '', 'contact': '', 'target_page': '', 'link_status': '', 'remarks': ''};
+        $scope.source = {'project_id': $scope.project_id, 'backlink': '', 'date': '', 'email': '', 'anchor': '', 'contact': '', 'target_page': '', 'link_status': '', 'remarks': '','link_type':''};
         $scope.sourceList = [];
 
         $scope.getLinkReport = function () {
@@ -53,6 +55,26 @@
             $scope.index = index;
 
         }
+        
+        $scope.getLinkTypesList = function () {
+            $http({
+                method: 'POST',
+                url: baseURL + '/settings/getlinktypeslist',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(function (jsondata) {
+                if (jsondata.data.status == 'SUCCESS') {
+                    $scope.linkTypes = jsondata.data.value.list;
+                    $scope.linkTypesCount = jsondata.data.value.count;
+                    angular.forEach($scope.linkTypes, function (value, key) {
+                        $scope.linkTypes[key].editMode = false;
+                    });
+                } else {
+                    $scope.sourceReport = [];
+                }
+            });
+        }
+
+        $scope.getLinkTypesList();
 
         $scope.saveNewLinkReportDetails = function () {
             $http({
@@ -102,7 +124,7 @@
             });
         }
 
-        $scope.cancelSource = function (source) {
+        $scope.cancelLinkReport = function (source) {
             $scope.showNew = false;
             source.editMode = false;
             $scope.source = {};

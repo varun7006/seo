@@ -113,9 +113,9 @@
                                                     <div class="row">
                                                         <div class="element-form">
                                                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right">
-                                                                <button class="btn btn-info btn-success" ng-disabled="user.name=='' || user.email=='' || user.website==''" ng-click="saveType == 'SAVE' ? saveNewUserDetails() : updateUserDetails()">{{ saveType}}</button>
+                                                                <button class="btn btn-info btn-success" ng-disabled="user.name == '' || user.email == '' || user.website == ''" ng-click="saveType == 'SAVE' ? saveNewUserDetails() : updateUserDetails()">{{ saveType}}</button>
                                                             </div>
-                                                            
+
                                                         </div
                                                     </div>
                                                 </div>

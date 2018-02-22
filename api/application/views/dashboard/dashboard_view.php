@@ -77,20 +77,20 @@
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Customer Name</th>
-                                                            <th>Website</th>
+                                                            <th>Project Name</th>
+                                                            <th>Client Name</th>
                                                             <th>Completed Links This Month</th>
                                                             <th>Comment</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr ng-repeat="user in userList track by $index">
+                                                        <tr ng-repeat="project in projectList track by $index">
                                                             <td>{{ $index + 1}}</td>
-                                                            <td>{{ user.name}}</td>
-                                                            <td ng-click="showLinkStatusReport(user.source_id)">{{ user.website}}</td> 
-                                                            <td>{{ user.completed_links}}2</td>
+                                                            <td ng-click="showLinkStatusReport(project.id)">{{ project.project_name}}</td>
+                                                            <td>{{ project.client_name }}</td> 
+                                                            <td>{{ project.completed_links}}</td>
                                                             <td>
-                                                                <span title="{{ user.comment }}">{{ user.comment | limitTo: 75 }}{{user.comment.length > 75 ? '...' : ''}}  </span>                                                          </td>
+                                                                <span title="{{ project.comment }}">{{ project.comment | limitTo: 75 }}{{project.comment.length > 75 ? '...' : ''}}  </span>                                                          </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -104,44 +104,6 @@
                     
                 </div>
                 <div class="row">
-<!--                    <div class="col-xl-7 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="content dashboard_v4_project_list">
-                            <div class="dashboard-content">
-                                <div class="dashboard-header">
-                                    <h4 class="page-content-title float-xs-left">Overview Of All Projects </h4>
-                                </div>
-                                <div class="dashboard-box">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="basic_table table-responsive">
-                                                <table class="table table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Customer Name</th>
-                                                            <th>Website</th>
-                                                            <th>Completed Links This Month</th>
-                                                            <th>Comment</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr ng-repeat="user in userList track by $index">
-                                                            <td>{{ $index + 1}}</td>
-                                                            <td>{{ user.name}}</td>
-                                                            <td>{{ user.website}}</td> 
-                                                            <td>{{ user.completed_links}}</td>
-                                                            <td>
-                                                                {{ user.comment}}                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>-->
                    <div class="col-xl-7 col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="content dashboard_v4_project_list">
                             <h4 class="page-content-title">Todo list
@@ -173,6 +135,45 @@
                                             </div>
                                         </li>
                                     </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-5 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="content dashboard_v4_project_list">
+                            <div class="dashboard-content">
+                                <div class="dashboard-header">
+                                    <h4 class="page-content-title float-xs-left">Overview Of All Clients </h4>
+                                </div>
+                                <div class="dashboard-box">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="basic_table table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Client Name</th>
+                                                            <th>Website</th>
+                                                            <th>Email</th>
+                                                            <th>Comment</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="user in userList track by $index">
+                                                            <td>{{ $index + 1}}</td>
+                                                            <td>{{ user.name}}</td>
+                                                            <td>{{ user.email }}</td> 
+                                                            <td>{{ user.completed_links}}</td>
+                                                            <td>
+                                                                <span title="{{ user.comment }}">{{ user.comment | limitTo: 75 }}{{user.comment.length > 75 ? '...' : ''}}  </span>                                                          </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

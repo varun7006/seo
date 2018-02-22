@@ -53,10 +53,10 @@
                                                         </div>
                                                     </div>
                                                     <div class="element-form">
-                                                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Contact No</label></div>
+                                                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Name</label></div>
                                                         <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
                                                             <div class="form-group">
-                                                                <input type="text" class="form-control" id="exampleInputweb_31" ng-model="source.contact" placeholder="Enter Contact No"  >
+                                                                <input type="text" class="form-control" id="exampleInputweb_31" ng-model="source.name" placeholder="Enter Contact No"  >
                                                             </div>
                                                         </div>
                                                     </div>
@@ -66,6 +66,17 @@
                                                         <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
                                                             <div class="form-group">
                                                                 <input type="text" class="form-control" id="exampleInputweb_31" ng-model="source.target_page" placeholder="Enter Target Page"  >
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="element-form">
+                                                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Link Type</label></div>
+                                                        <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                            <div class="form-group">
+                                                                <select class="form-control" data-placeholder="Choose Link Type" ng-model="source.link_type">
+                                                                    <option value="">Select</option>
+                                                                    <option ng-repeat="links in linkTypes track by $index" ng-selected="links.id == source.link_type" value="{{links.id}}">{{ links.name}}</option>
+                                                                </select>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -80,7 +91,7 @@
                                                                     <option value="OPEN">Open</option>
                                                                     <option value="PROCCESSING">Processing</option>
                                                                     <option value="COMPLETED">Completed</option>
-                                                                    
+
 
                                                                 </select>
                                                             </div>
@@ -100,7 +111,7 @@
                                                             <button class="btn btn-info btn-success" ng-click="saveType == 'SAVE' ? saveNewLinkReportDetails() : updateLinkReportDetails()">{{ saveType}}</button>
                                                         </div>
                                                         <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
-                                                            <button class="btn btn-info btn-danger" ng-click="cancelLinkReport()">Cancel</button>
+                                                            <button class="btn btn-info btn-danger" ng-click="cancelLinkReport({})">Cancel</button>
                                                         </div>
                                                     </div
                                                 </div>
@@ -140,14 +151,14 @@
                                                 <thead>
                                                     <tr >
                                                         <th>#</th>
-                                                        <th ng-click="orderByField = 'backlink'; reverseSort = !reverseSort" style="cursor: pointer !important;">BackLink
-                                                            <span ng-show="orderByField == 'backlink'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
-                                                        </th>
-                                                        <th ng-click="orderByField = 'link_status'; reverseSort = !reverseSort" style="cursor: pointer !important;">Link Status
-                                                           <span ng-show="orderByField == 'link_status'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
-                                                        </th>
                                                         <th ng-click="orderByField = 'date'; reverseSort = !reverseSort" style="cursor: pointer !important;">Date
                                                             <span ng-show="orderByField == 'date'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
+                                                        </th>
+                                                        <th ng-click="orderByField = 'link_status'; reverseSort = !reverseSort" style="cursor: pointer !important;">Link Status
+                                                            <span ng-show="orderByField == 'link_status'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
+                                                        </th>
+                                                        <th ng-click="orderByField = 'backlink'; reverseSort = !reverseSort" style="cursor: pointer !important;">BackLink
+                                                            <span ng-show="orderByField == 'backlink'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
                                                         </th>
                                                         <th ng-click="orderByField = 'anchor'; reverseSort = !reverseSort" style="cursor: pointer !important;">Anchor
                                                             <span ng-show="orderByField == 'anchor'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
@@ -155,8 +166,8 @@
                                                         <th ng-click="orderByField = 'target_page'; reverseSort = !reverseSort" style="cursor: pointer !important;">Target Page
                                                             <span ng-show="orderByField == 'target_page'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
                                                         </th>
-                                                        <th ng-click="orderByField = 'contact'; reverseSort = !reverseSort" style="cursor: pointer !important;">Contact
-                                                            <span ng-show="orderByField == 'contact'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
+                                                        <th ng-click="orderByField = 'name'; reverseSort = !reverseSort" style="cursor: pointer !important;">Name
+                                                            <span ng-show="orderByField == 'name'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
                                                         </th>
                                                         <th ng-click="orderByField = 'email'; reverseSort = !reverseSort" style="cursor: pointer !important;">Email
                                                             <span ng-show="orderByField == 'email'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
@@ -172,42 +183,42 @@
                                                 <tbody>
                                                     <tr ng-repeat="sources in sourceReport| orderBy:orderByField:reverseSort |  filter: searchfield track by $index">
                                                         <td>{{ $index + 1}}</td>
-                                                        <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.backlink}}</span>
-                                                        <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.backlink" >
+                                                        <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.date}}</span>
+                                                            <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.date" >
                                                         </td>
                                                         <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.link_status | lowercase }}</span>
-                                                         <select class="form-control" data-placeholder="Choose Country" ng-show="sources.editMode" ng-model="sources.link_status">
-                                                                    <option value="">Select</option>
-                                                                    <option ng-selected="sources.link_status == 'FIRST APPROACH'" value="FIRST APPROACH">First Approach</option>
-                                                                    <option ng-selected="sources.link_status == 'SECOND APPROACH'" value="SECOND APPROACH">SECOND Approach</option>
-                                                                    <option ng-selected="sources.link_status == 'OPEN'" value="OPEN">Open</option>
-                                                                    <option ng-selected="sources.link_status == 'PROCCESSING'" value="PROCCESSING">Processing</option>
-                                                                    <option ng-selected="sources.link_status == 'COMPLETED'" value="COMPLETED">Completed</option>
-                                                                </select>
+                                                            <select class="form-control" data-placeholder="Choose Country" ng-show="sources.editMode" ng-model="sources.link_status">
+                                                                <option value="">Select</option>
+                                                                <option ng-selected="sources.link_status == 'FIRST APPROACH'" value="FIRST APPROACH">First Approach</option>
+                                                                <option ng-selected="sources.link_status == 'SECOND APPROACH'" value="SECOND APPROACH">SECOND Approach</option>
+                                                                <option ng-selected="sources.link_status == 'OPEN'" value="OPEN">Open</option>
+                                                                <option ng-selected="sources.link_status == 'PROCCESSING'" value="PROCCESSING">Processing</option>
+                                                                <option ng-selected="sources.link_status == 'COMPLETED'" value="COMPLETED">Completed</option>
+                                                            </select>
                                                         </td>
-                                                        <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.date}}</span>
-                                                        <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.date" >
+                                                        <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.backlink}}</span>
+                                                            <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.backlink" >
                                                         </td>
                                                         <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.anchor}}</span>
-                                                        <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.anchor"  >
+                                                            <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.anchor"  >
                                                         </td>
                                                         <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.target_page}}</span>
-                                                        <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.target_page" >
+                                                            <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.target_page" >
                                                         </td>
-                                                        <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.contact}}</span>
-                                                        <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.contact" >
+                                                        <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.name}}</span>
+                                                            <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.name" >
                                                         </td>
                                                         <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.email}}</span>
-                                                        <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.email" >
+                                                            <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.email" >
                                                         </td>
                                                         <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.remarks}}</span>
-                                                        <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.remarks" >
+                                                            <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.remarks" >
                                                         </td>
                                                         <td>
                                                             <button ng-hide="sources.editMode" class="btn btn-mini btn-primary" ng-click="editSource(sources, $index)" ><i class="fa fa-edit"></i></button>
                                                             <button ng-hide="sources.editMode" class="btn btn-mini btn-danger" ng-click="deleteSourceBacklink(sources.id, $index)" id="sa-warning"><i class="fa fa-close"></i></button>
                                                             <button ng-show="sources.editMode" class="btn btn-xs btn-primary" ng-click="updateSourceDetails(sources)" >Update</button>
-                                                            <button ng-show="sources.editMode" class="btn btn-xs btn-danger" ng-click="cancelSource(sources)" id="sa-warning">Cancel</button>
+                                                            <button ng-show="sources.editMode" class="btn btn-xs btn-danger" ng-click="cancelLinkReport(sources)" id="sa-warning">Cancel</button>
                                                         </td>
                                                     </tr>
                                                 </tbody>

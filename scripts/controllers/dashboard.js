@@ -127,7 +127,7 @@
         }
 
         $scope.showLinkStatusReport = function (project_id) {
-            $state.go('link_status_report', {'project_id': project_id});
+            $state.go('link_status_report', {'project_id': btoa(project_id)});
         }
     }
 })();

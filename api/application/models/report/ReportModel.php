@@ -17,9 +17,10 @@ class ReportModel extends CI_Model {
     }
 
     public function getLinkStatusReport($project_id) {
-        $this->db->select("a.*,b.project_name");
+        $this->db->select("a.*,b.project_name,c.name as link_type_name");
         $this->db->from("link_status_report as a");
         $this->db->join("project_details as b", "a.project_id = b.id");
+        $this->db->join("link_types as c", "a.link_type = c.id","LEFT");
         $this->db->where("a.status", "TRUE");
         $this->db->where("b.status", "TRUE");
         $this->db->where("a.project_id", $project_id);
