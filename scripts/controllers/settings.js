@@ -1,16 +1,18 @@
 (function () {
-   
+
     'use strict';
     angular
             .module('app')
             .controller('settingsCtrl', settingsCtrl);
     settingsCtrl.$inject = ['$scope', '$http', '$state', '$stateParams'];
     function settingsCtrl($scope, $http, $state, $stateParams) {
-        
+
         $scope.linkTypes = [];
-        $scope.linkTypesCount = 0;       
+        $scope.linkTypesCount = 0;
+        $scope.topicsList = [];
+        $scope.topicsCount = 0;
         $scope.link = {'name': $scope.project_id};
-        
+
 
         $scope.getLinkTypesList = function () {
             $http({
@@ -19,24 +21,44 @@
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function (jsondata) {
                 if (jsondata.data.status == 'SUCCESS') {
-                   $scope.linkTypes = jsondata.data.value.list;
-                   $scope.linkTypesCount = jsondata.data.value.count;
-                   angular.forEach($scope.linkTypes, function (value, key) {
+                    $scope.linkTypes = jsondata.data.value.list;
+                    $scope.linkTypesCount = jsondata.data.value.count;
+                    angular.forEach($scope.linkTypes, function (value, key) {
                         $scope.linkTypes[key].editMode = false;
                     });
                 } else {
-                    $scope.sourceReport = [];
+                    $scope.linkTypes = [];
                 }
             });
         }
-        
-            $scope.getLinkTypesList();
-        
+
+        $scope.getLinkTypesList();
+
+        $scope.getTopicsList = function () {
+            $http({
+                method: 'POST',
+                url: baseURL + '/settings/gettopicslist',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(function (jsondata) {
+                if (jsondata.data.status == 'SUCCESS') {
+                    $scope.topicsList = jsondata.data.value.list;
+                    $scope.topicsCount = jsondata.data.value.count;
+//                    angular.forEach($scope.linkTypes, function (value, key) {
+//                        $scope.linkTypes[key].editMode = false;
+//                    });
+                } else {
+                    $scope.topicsList = [];
+                }
+            });
+        }
+
+        $scope.getTopicsList();
+
         $scope.addNewLinkType = function () {
             $scope.showNew = true;
             $scope.saveType = "SAVE";
         }
-        
+
         $scope.editLinkType = function (linkObj, index) {
             linkObj.editMode = true;
             $scope.saveType = "UPDATE";
@@ -57,14 +79,14 @@
                 if (jsondata.data.status == 'SUCCESS') {
                     $scope.link = {};
                     $scope.showNew = false;
-                   $scope.getLinkTypesList();
+                    $scope.getLinkTypesList();
                 } else {
 
                 }
             });
 //            
         }
-        
+
         $scope.updateLinkType = function (link) {
             $scope.isAjax = true;
             $scope.link.name = link.name;
@@ -91,7 +113,7 @@
             link.editMode = false;
             $scope.link = {};
         }
-        
+
         $scope.deleteLinkType = function (id, index) {
             $scope.updateId = id;
             if (confirm("Are you sure you want to delete this Link Type?")) {
@@ -107,12 +129,32 @@
                     alert(jsondata.data.msg)
                     if (jsondata.data.status == 'SUCCESS') {
                         $scope.linkTypes.splice(index, 1);
+                        $scope.linkTypesCount = $scope.linkTypesCount - 1;
                     }
                 });
             }
         }
 
-
+        $scope.deleteTopic = function (id, index) {
+            $scope.updateId = id;
+            if (confirm("Are you sure you want to delete this Topic?")) {
+                $scope.isAjax = true;
+                $http({
+                    method: 'POST',
+                    url: baseURL + '/settings/deletetopic',
+                    dataType: "JSON",
+                    data: "id=" + encodeURIComponent($scope.updateId),
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                }).then(function (jsondata) {
+                    $scope.isAjax = false;
+                    alert(jsondata.data.msg)
+                    if (jsondata.data.status == 'SUCCESS') {
+                        $scope.topicsList.splice(index, 1);
+                        $scope.topicsCount = $scope.topicsCount - 1;
+                    }
+                });
+            }
+        }
 
     }
 })();

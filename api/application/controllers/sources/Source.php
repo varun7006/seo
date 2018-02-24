@@ -208,7 +208,10 @@ class Source extends MY_Controller {
 
     public function saveNewSource() {
         $dataArr = json_decode($this->input->post("data"), TRUE);
-
+        if(isset($dataArr['project_id'])){
+            $projectArr = implode(",", $dataArr['project_id']);
+            $dataArr['project_id'] = $projectArr;
+        }
         $saveResult = $this->modelObj->saveNewSource($dataArr);
         if (isset($dataArr['topics'])) {
             $tagList = array();

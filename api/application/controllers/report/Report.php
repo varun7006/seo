@@ -33,6 +33,9 @@ class Report extends MY_Controller {
     public function saveNewLinkReport() {
         $dataArr = json_decode($this->input->post("data"), TRUE);
         $dataArr['date'] = date("Y-m-d",  strtotime($dataArr['date']));
+        if(isset($dataArr['link_status']) && $dataArr['link_status']=='COMPLETED'){
+            $dataArr['completed_date'] = isset($dataArr['date']) ?  $dataArr['date'] : date("Y-m-d");
+        }
         $saveResult = $this->modelObj->saveNewLinkReport($dataArr);
         echo json_encode($saveResult);
     }

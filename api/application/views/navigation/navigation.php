@@ -92,7 +92,7 @@
                     </a>
                 </li>
                 <li class="sub-item">
-                    <a href="javascript:void(0)">
+                    <a href="javascript:void(0)" ui-sref=users>
                         <i class="icon_tags_alt"></i>
                         <span>Client</span>
                     </a>
@@ -107,7 +107,7 @@
                     </ul>
                 </li>
                 <li class="sub-item">
-                    <a href="javascript:void(0)">
+                    <a href="javascript:void(0)" ui-sref=sources>
                         <i class="icon_tags_alt"></i>
                         <span>Sources</span>
                     </a>
@@ -125,7 +125,7 @@
                     </ul>
                 </li>
                 <li class="sub-item">
-                    <a href="javascript:void(0)">
+                    <a href="javascript:void(0)" ui-sref=project>
                         <i class="icon_tags_alt"></i>
                         <span>Project</span>
                     </a>
@@ -162,7 +162,7 @@
                             <a ui-sref=viewlinktype>View Link Types</a>
                         </li>
                         <li>
-                            <a ui-sref=addprojectview>Add Project</a>
+                            <a ui-sref=topics>Topics</a>
                         </li>
                     </ul>
                 </li>

@@ -56,7 +56,7 @@
                                                         <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Name</label></div>
                                                         <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
                                                             <div class="form-group">
-                                                                <input type="text" class="form-control" id="exampleInputweb_31" ng-model="source.name" placeholder="Enter Contact No"  >
+                                                                <input type="text" class="form-control" id="exampleInputweb_31" ng-model="source.name" placeholder="Enter Name"  >
                                                             </div>
                                                         </div>
                                                     </div>
@@ -75,7 +75,7 @@
                                                             <div class="form-group">
                                                                 <select class="form-control" data-placeholder="Choose Link Type" ng-model="source.link_type">
                                                                     <option value="">Select</option>
-                                                                    <option ng-repeat="links in linkTypes track by $index" ng-selected="links.id == source.link_type" value="{{links.id}}">{{ links.name}}</option>
+                                                                    <option ng-repeat="links in linkTypes track by $index" ng-selected="links.id == source.link_type" value="{{links.id}}">{{ links.name | lowercase }}</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -86,11 +86,11 @@
                                                             <div class="form-group">
                                                                 <select class="form-control" data-placeholder="Choose Country" ng-model="source.link_status">
                                                                     <option value="">Select</option>
-                                                                    <option value="FIRST APPROACH">First Approach</option>
-                                                                    <option value="SECOND APPROACH">Second Approach</option>
-                                                                    <option value="OPEN">Open</option>
-                                                                    <option value="PROCCESSING">Processing</option>
-                                                                    <option value="COMPLETED">Completed</option>
+                                                                    <option value="FIRST APPROACH">first approach</option>
+                                                                    <option value="SECOND APPROACH">second approach</option>
+                                                                    <option value="OPEN">open</option>
+                                                                    <option value="PROCCESSING">processing</option>
+                                                                    <option value="COMPLETED">completed</option>
 
 
                                                                 </select>
@@ -146,7 +146,7 @@
                                             <label class="sr-only">Search</label>
                                             <span style="margin:10% !important;"><input class="form-control" ng-model="searchfield" placeholder="Search" type="text"></span>
                                         </div>
-                                        <div class="basic_table table-responsive">
+                                        <div id="myDataTable" class="basic_table table-responsive">
                                             <table class="table table-striped">
                                                 <thead>
                                                     <tr >
@@ -189,14 +189,14 @@
                                                         <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.link_status | lowercase }}</span>
                                                             <select class="form-control" data-placeholder="Choose Country" ng-show="sources.editMode" ng-model="sources.link_status">
                                                                 <option value="">Select</option>
-                                                                <option ng-selected="sources.link_status == 'FIRST APPROACH'" value="FIRST APPROACH">First Approach</option>
-                                                                <option ng-selected="sources.link_status == 'SECOND APPROACH'" value="SECOND APPROACH">SECOND Approach</option>
-                                                                <option ng-selected="sources.link_status == 'OPEN'" value="OPEN">Open</option>
-                                                                <option ng-selected="sources.link_status == 'PROCCESSING'" value="PROCCESSING">Processing</option>
-                                                                <option ng-selected="sources.link_status == 'COMPLETED'" value="COMPLETED">Completed</option>
+                                                                <option ng-selected="sources.link_status == 'FIRST APPROACH'" value="FIRST APPROACH">first approach</option>
+                                                                <option ng-selected="sources.link_status == 'SECOND APPROACH'" value="SECOND APPROACH">second approach</option>
+                                                                <option ng-selected="sources.link_status == 'OPEN'" value="OPEN">open</option>
+                                                                <option ng-selected="sources.link_status == 'PROCCESSING'" value="PROCCESSING">processing</option>
+                                                                <option ng-selected="sources.link_status == 'COMPLETED'" value="COMPLETED">completed</option>
                                                             </select>
                                                         </td>
-                                                        <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.backlink}}</span>
+                                                        <td ng-click="editSource(sources, $index)" title="{{ sources.backlink }}"><span ng-hide="sources.editMode">{{ sources.backlink | limitTo: 40 }}{{sources.backlink > 40 ? '...' : ''}}</span>
                                                             <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.backlink" >
                                                         </td>
                                                         <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.anchor}}</span>

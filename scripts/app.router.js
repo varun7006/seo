@@ -102,6 +102,11 @@ angular.module('app')
                                     templateUrl: baseURL + '/settings/viewlinktypes',
                                     controller: "settingsCtrl",
                                 })
+                                 .state('topics', {
+                                    url: '/settings/topics',
+                                    templateUrl: baseURL + '/settings/topicsview',
+                                    controller: "settingsCtrl",
+                                })
 
 
 

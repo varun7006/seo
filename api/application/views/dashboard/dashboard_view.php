@@ -156,7 +156,6 @@
                                                             <th>#</th>
                                                             <th>Client Name</th>
                                                             <th>Website</th>
-                                                            <th>Email</th>
                                                             <th>Comment</th>
                                                         </tr>
                                                     </thead>
@@ -164,7 +163,6 @@
                                                         <tr ng-repeat="user in userList track by $index">
                                                             <td>{{ $index + 1}}</td>
                                                             <td>{{ user.name}}</td>
-                                                            <td>{{ user.email }}</td> 
                                                             <td>{{ user.completed_links}}</td>
                                                             <td>
                                                                 <span title="{{ user.comment }}">{{ user.comment | limitTo: 75 }}{{user.comment.length > 75 ? '...' : ''}}  </span>                                                          </td>

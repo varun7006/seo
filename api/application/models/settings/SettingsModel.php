@@ -29,7 +29,18 @@ class SettingsModel extends CI_Model {
         }
     }
 
-   
+    public function getTopicsList() {
+        $this->db->select("a.*");
+        $this->db->from("tags as a");
+        $this->db->where("a.status", "TRUE");
+        $result = $this->db->get()->result_array();
+        $topicsCount = count($result);
+        if ($topicsCount > 0) {
+            return array("status" => "SUCCESS", "value" => array("list" => $result, "count" => $topicsCount), "message" => "Topics List is present");
+        } else {
+            return array("status" => "ERR", "value" => array(), "message" => "No Topics Found");
+        }
+    }
     
     public function saveNewLinkType($dataArr) {
         $result = $this->db->insert("link_types", $dataArr);
@@ -57,6 +68,16 @@ class SettingsModel extends CI_Model {
             return array("status" => "SUCCESS", "value" => "1", "msg" => "Link Type deleted successfully.");
         } else {
             return array("status" => "ERR", "value" => "-1", "msg" => "unable to delete Link Type.");
+        }
+    }
+    
+    public function deleteTopic($deleteId) {
+        $this->db->where('id', $deleteId);
+        $deleteResult = $this->db->update('tags', array("status"=>'FALSE'));
+        if ($this->db->affected_rows() > 0) {
+            return array("status" => "SUCCESS", "value" => "1", "msg" => "Topic deleted successfully.");
+        } else {
+            return array("status" => "ERR", "value" => "-1", "msg" => "unable to delete Topic.");
         }
     }
     

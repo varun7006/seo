@@ -19,7 +19,7 @@
         $scope.reverseSort = false;
         $scope.showNew = false;
         $scope.saveType = "SAVE";
-        $scope.source = {'project_id': $scope.project_id, 'backlink': '', 'date': '', 'email': '', 'anchor': '', 'contact': '', 'target_page': '', 'link_status': '', 'remarks': '','link_type':''};
+        $scope.source = {'project_id': $scope.project_id, 'backlink': '', 'date': '', 'email': '', 'anchor': '', 'name': '', 'target_page': '', 'link_status': '', 'remarks': '','link_type':''};
         $scope.sourceList = [];
 
         $scope.getLinkReport = function () {
@@ -100,7 +100,7 @@
             $scope.isAjax = true;
             $scope.source.backlink = source.backlink;
             $scope.source.email = source.email;
-            $scope.source.contact = source.contact;
+            $scope.source.name = source.name;
             $scope.source.date = source.date;
             $scope.source.link_status = source.link_status;
             $scope.source.anchor = source.anchor;
