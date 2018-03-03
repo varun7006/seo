@@ -8,6 +8,11 @@
         $scope.tags = [];
         $scope.linkTypes = [];
         $scope.linkTypesCount = 0;
+        $scope.showAlert = false;
+        $scope.alertText = "";
+        $scope.alertIcon = "";
+        $scope.alertClass = "";
+
         $scope.tag = {
             selected: ''
         };
@@ -44,7 +49,7 @@
 
         $scope.tags.sort();
 
-        $scope.source = {'name': '', 'user_id': '', 'email': '', 'source_link': '', 'mobile_no': '', 'topics': '', 'link_status': '','link_type':'','project_id':''};
+        $scope.source = {'name': '', 'user_id': '', 'email': '', 'source_link': '', 'mobile_no': '', 'topics': '', 'link_status': '', 'link_type': '', 'project_id': []};
         $scope.sourceList = [];
         $scope.alertArr = {'name': 'Source Name', 'user_id': 'Source User', 'email': 'Source Email', 'source_link': 'Source Link', 'mobile_no': 'Mobile No', 'topics': 'Topics', 'link_status': 'Link Status'};
         $scope.userList = [];
@@ -60,10 +65,22 @@
         $scope.form = [];
         $scope.files = [];
         $scope.iframeLink = "";
+
+        $scope.from_limit = 0;
+        $scope.selectedPage = 0;
+        $scope.to_limit = 100;
+        $scope.limitdifference = 100;
+        $scope.totalItems = 0;
+        $scope.currentPage = 0;
+        $scope.pageArr = [];
+
         $scope.getSourceList = function () {
+            $scope.pageArr = [];
+            $scope.limitdifference = $scope.to_limit - $scope.from_limit;
             $http({
-                method: 'GET',
+                method: 'POST',
                 url: baseURL + '/sources/getsourcelist',
+                data: 'from_limit=' + encodeURIComponent($scope.from_limit) + '&to_limit=' + encodeURIComponent($scope.limitdifference),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function (jsondata) {
                 if (jsondata.data.status == 'SUCCESS') {
@@ -72,15 +89,61 @@
                         $scope.sourceList[key].editMode = false;
                     });
                     $scope.sourceCount = jsondata.data.value.count;
+                    $scope.totalItems = jsondata.data.value.count;
+                    var i = 0;
+                    var nextlimit = 0;
+                    for (i = 0; i < $scope.totalItems; i = i + $scope.limitdifference) {
+                        $scope.pageArr.push(nextlimit);
+                        nextlimit = i + $scope.limitdifference;
+                    }
                 }
-
             });
         }
 
         $scope.getSourceList();
 
-        $scope.getIframeSrc = function (link) {
-            $scope.iframeLink = $sce.trustAsResourceUrl(link);
+//        $scope.getIframeSrc = function (link) {
+//            $scope.iframeLink = $sce.trustAsResourceUrl(link);
+//        }
+        $scope.changeLimit = function (fromlimit, index) {
+            $scope.selectedPage = index;
+            $scope.pageArr = [];
+            $scope.from_limit = fromlimit;
+            $scope.to_limit = fromlimit + $scope.limitdifference;
+            
+            $scope.getSourceList();
+
+        }
+
+
+        $scope.changeLimitWithButton = function (type) {
+            if (type == 'previous') {
+                if ($scope.from_limit > 0) {
+                    $scope.from_limit = $scope.from_limit - $scope.limitdifference;
+                } else {
+                    $scope.from_limit = 0;
+                }
+                if ($scope.selectedPage > 0) {
+                    $scope.selectedPage = $scope.selectedPage - 1;
+                } else {
+                    $scope.selectedPage = 0;
+                }
+            } else if (type == 'next') {
+                var pageArrLength = $scope.pageArr.length;
+                var max_limit = $scope.pageArr[pageArrLength - 1]
+                if ($scope.from_limit < max_limit) {
+                    $scope.from_limit = $scope.from_limit + $scope.limitdifference;
+                } else {
+                    $scope.from_limit = max_limit;
+
+                }
+                if ($scope.selectedPage < (pageArrLength - 1)) {
+                    $scope.selectedPage = $scope.selectedPage + 1;
+                } else {
+                    $scope.selectedPage = pageArrLength - 1;
+                }
+            }
+            $scope.changeLimit($scope.from_limit, $scope.selectedPage);
         }
 
         $scope.saveNewSourceDetails = function () {
@@ -102,18 +165,31 @@
                 data: 'data=' + encodeURIComponent(angular.toJson($scope.source)),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function (jsondata) {
-                alert(jsondata.data.msg)
+//                alert(jsondata.data.msg)
                 if (jsondata.data.status == 'SUCCESS') {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-check";
+                    $scope.alertClass = "alert-success";
                     $scope.source = {};
                     $scope.showNewSource = false;
                     $scope.getSourceList();
                 } else {
-
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-times-circle";
+                    $scope.alertClass = "alert-danger";
                 }
             });
 //            
         }
 
+        $scope.hideAlert = function () {
+            $scope.showAlert = false;
+            $scope.alertText = "";
+            $scope.alertIcon = "";
+            $scope.alertClass = "";
+        }
 
         $scope.addNewSource = function () {
             $scope.showNewSource = true;
@@ -142,6 +218,7 @@
             $scope.source.link_target = sourceObj.link_target;
             $scope.source.link_status = sourceObj.link_status;
             $scope.source.comment = sourceObj.comment;
+            $scope.source.project_id = sourceObj.project_id;
 
             $http({
                 method: 'POST',
@@ -151,23 +228,20 @@
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function (jsondata) {
                 $scope.isAjax = false;
-                alert(jsondata.data.msg)
+                if (jsondata.data.status == 'SUCCESS') {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-check";
+                    $scope.alertClass = "alert-success";
+                } else {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-times-circle";
+                    $scope.alertClass = "alert-danger";
+                }
                 $scope.showNewSource = false;
                 sourceObj.editMode = false;
-                if (jsondata.data.status == 'SUCCESS') {
-                    $scope.showNewSource = false;
-                    $scope.sourceList[$scope.index].name = $scope.source.name;
-                    $scope.sourceList[$scope.index].email = $scope.source.email;
-                    $scope.sourceList[$scope.index].mobile_no = $scope.source.mobile_no;
-                    $scope.sourceList[$scope.index].source_link = $scope.source.source_link;
-                    $scope.sourceList[$scope.index].link_text = $scope.source.link_text;
-                    $scope.sourceList[$scope.index].link_type = $scope.source.link_type;
-                    $scope.sourceList[$scope.index].link_target = $scope.source.link_target;
-                    $scope.sourceList[$scope.index].link_status = $scope.source.link_status;
-                    $scope.sourceList[$scope.index].comment = $scope.source.comment;
-                    $scope.sourceList[$scope.index].editMode = false;
-                    $scope.source = {};
-                }
+                $scope.getSourceList();
             });
         }
 
@@ -191,10 +265,19 @@
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).then(function (jsondata) {
                     $scope.isAjax = true;
-                    alert(jsondata.data.msg)
                     if (jsondata.data.status == 'SUCCESS') {
                         $scope.sourceList.splice(index, 1);
+                        $scope.showAlert = true;
+                        $scope.alertText = jsondata.data.msg;
+                        $scope.alertIcon = "fa-check";
+                        $scope.alertClass = "alert-success";
+                    } else {
+                        $scope.showAlert = true;
+                        $scope.alertText = jsondata.data.msg;
+                        $scope.alertIcon = "fa-times-circle";
+                        $scope.alertClass = "alert-danger";
                     }
+                    $scope.getSourceList();
                 });
             }
         }
@@ -278,8 +361,6 @@
                     var formData = new FormData();
                     if ($scope.files.length > 0) {
                         formData.append("file", $scope.form.file);
-                    } else {
-                        alert("Please select file to upload.")
                     }
                     return formData;
                 },
@@ -289,9 +370,17 @@
                 }
 
             }).then(function (jsondata) {
-                alert(jsondata.data.msg);
                 if (jsondata.data.status == 'SUCCESS') {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-check";
+                    $scope.alertClass = "alert-success";
                     $scope.getSourceList();
+                } else {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-times-circle";
+                    $scope.alertClass = "alert-danger";
                 }
             });
         }

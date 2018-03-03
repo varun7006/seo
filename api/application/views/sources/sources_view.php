@@ -4,11 +4,11 @@
         width: 100%;
     }
 
-    a:hover + .box,.box:hover{
-        display: block;
-        position: relative;
-        z-index: 100;
-    }
+    /*    a:hover + .box,.box:hover{
+            display: block;
+            position: relative;
+            z-index: 100;
+        }*/
 </style>
 <section id="main" class="container-fluid">
     <div class="row">
@@ -86,43 +86,43 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="element-form">
+<!--                                                        <div class="element-form">
                                                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Which Project?</label></div>
                                                             <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
                                                                 <div class="form-group">
                                                                     <select class="form-control" data-placeholder="Choose Project" ng-model="source.project_id" multiple>
                                                                         <option value="">Select</option>
-                                                                        <option ng-repeat="project in projectList track by $index" ng-selected="project.id == source.project_id" value="{{project.id}}">{{project.project_name}}</option>
+                                                                        <option ng-repeat="project in projectList track by $index" ng-selected="project.id == source.project_id" value="{{project.id}}">{{project.project_name| lowercase }}</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div>-->
                                                         <div class="element-form">
                                                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Link Type</label></div>
                                                             <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
                                                                 <div class="form-group">
                                                                     <select class="form-control" data-placeholder="Choose Link Type" ng-model="source.link_type">
                                                                         <option value="">Select</option>
-                                                                        <option ng-repeat="links in linkTypes track by $index" ng-selected="links.id == source.link_type" value="{{links.id}}">{{ links.name }}</option>
-                                                                     </select>
+                                                                        <option ng-repeat="links in linkTypes track by $index" ng-selected="links.id == source.link_type" value="{{links.id}}">{{ links.name | lowercase }}</option>
+                                                                    </select>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="element-form">
+<!--                                                        <div class="element-form">
                                                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Status</label></div>
                                                             <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
                                                                 <div class="form-group">
                                                                     <select class="form-control" data-placeholder="Choose Country" ng-model="source.link_status">
                                                                         <option value="">Select</option>
-                                                                        <option value="open">Open</option>
-                                                                        <option value="processing">Processing</option>
-                                                                        <option value="completed">Completed</option>
-                                                                        <option value="rejected">Rejected</option>
+                                                                        <option value="open">open</option>
+                                                                        <option value="processing">processing</option>
+                                                                        <option value="completed">completed</option>
+                                                                        <option value="rejected">rejected</option>
 
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div>-->
 
                                                         <div class="element-form">
                                                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Comment</label></div>
@@ -157,6 +157,20 @@
 </div>
 <div class="row">
     <section id="content-wrapper" class="form-elements">
+        <div class="row" ng-show="showAlert==true">
+            <div class="col-xs-2"></div>
+            <div class="col-xs-8">
+                <div class="alert-dark-background">
+                    <div class="alert {{ alertClass }} alert-dismissible fade in" role="alert">
+                        <button type="button" class="close" ng-click="hideAlert()">
+                            <span >×</span>
+                        </button>
+                        <i class="fa {{ alertIcon }}"></i><strong></strong>{{ alertText }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-2"></div>
+        </div>
 
         <div class="contain-inner dashboard_v4-page">
             <div class="row">
@@ -166,8 +180,8 @@
                             <div class="dashboard-header">
                                 <h4 class="page-content-title float-xs-left">Total {{ sourceCount}} Source </h4>
                                 <span style="float:right"><button type="button" class="btn btn-primary" ng-click="addNewSource()">Add New</button></span>
-                                <span style="float:right;margin-right: 2%;"><button type="button" class="btn btn-mini btn-success" data-toggle="modal" data-target="#defaultmodal">Upload Excel</button></span>
-                                <span style="float:right;margin-right: 2%;"><button class="btn btn-warning" onclick="exportData('myDataTable', 'sources.xls')">Export to Excel</button></span>
+                                <span style="float:right;margin-right: 2%;"><button type="button" class="btn btn-mini btn-success" data-toggle="modal" data-target="#defaultmodal">Import Excel</button></span>
+                                <span style="float:right;margin-right: 2%;"><a href="api/index.php/sources/generatesourceexcel" target="_blank"><button class="btn btn-warning" >Export to Excel</button></a></span>
                             </div>
                             <div class="dashboard-box">
                                 <div class="row">
@@ -175,6 +189,9 @@
                                         <div class="col-md-4">
                                             <label class="sr-only">Search</label>
                                             <span style="margin:10% !important;"><input class="form-control" ng-model="searchfield" placeholder="Search" type="text"></span>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <span style="float: right;"><a href="<?php echo "api/application/files/sources.xlsx"; ?>" target="_blank">Download Sample Excel Format</a></span>
                                         </div>
                                         <div class="basic_table table-responsive">
                                             <div id="myDataTable">
@@ -218,21 +235,21 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr ng-repeat="sources in sourceList| orderBy:orderByField:reverseSort |  filter: searchfield track by $index">
-                                                            <td>{{ $index + 1}}</td>
+                                                            <td>{{ sources.sn }}</td>
                                                             <td ng-click="editSource(sources, $index)">
-                                                                <span ng-hide="sources.editMode" ng-mouseover="getIframeSrc(sources.exact_link)"><a href="{{ sources.exact_link }}" target="_blank" >{{ sources.source_link}}</a><div class="box"><iframe src="{{ iframeLink }}" width = "200px" height = "200px"></iframe></div></span>
+                                                                <span ng-hide="sources.editMode"><a href="{{ sources.exact_link | lowercase }}" target="_blank" >{{ sources.source_link}}</a></span>
                                                                 <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.source_link" placeholder="Source Link" required="" />
                                                             </td>
                                                             <td ng-click="editSource(sources, $index)">
-                                                                <span ng-hide="sources.editMode"><a href="mailto:{{ sources.email}}">{{ sources.email}}</a></span>
+                                                                <span ng-hide="sources.editMode"><a href="mailto:{{ sources.email | lowercase }}">{{ sources.email}}</a></span>
                                                                 <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.email" placeholder="Email" required="" />
                                                             </td>
                                                             <td ng-click="editSource(sources, $index)">
-                                                                <span ng-hide="sources.editMode">{{ sources.name}}</span>
+                                                                <span ng-hide="sources.editMode">{{ sources.name | lowercase }}</span>
                                                                 <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.name" placeholder="Name" required="" />
                                                             </td>
                                                             <td ng-click="editSource(sources, $index)">
-                                                                <span ng-hide="sources.editMode">{{ sources.topics}}</span>
+                                                                <span ng-hide="sources.editMode">{{ sources.topics | lowercase}}</span>
                                                                 <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.topics" placeholder="Topics" required="" />
                                                             </td>
                                                             <td>
@@ -245,22 +262,22 @@
                                                                 <span ng-hide="sources.editMode">{{ sources.moz_rank}}</span>
                                                             </td>
                                                             <td ng-click="editSource(sources, $index)">
-                                                                <span ng-hide="sources.editMode">{{ sources.project_name}}</span>
-                                                                <select ng-show="sources.editMode" class="form-control" data-placeholder="Choose Project" ng-model="sources.project_id">
+                                                                <span ng-hide="sources.editMode">{{ sources.project_list | lowercase}}</span>
+                                                                <select ng-show="sources.editMode" class="form-control" data-placeholder="Choose Project" ng-model="sources.project_id" multiple>
                                                                     <option value="">Select</option>
-                                                                    <option ng-repeat="project in projectList track by $index" ng-selected="project.id == sources.project_id" value="{{project.id}}">{{project.project_name}}</option>
+                                                                    <option ng-repeat="project in projectList track by $index" ng-selected="project.id == sources.project_id" value="{{project.id}}">{{project.project_name| lowercase }}</option>
                                                                 </select>
                                                             </td>
                                                             <td ng-click="editSource(sources, $index)">
                                                                 <span ng-hide="sources.editMode">{{ sources.link_type | lowercase }}</span>
                                                                 <select ng-show="sources.editMode" class="form-control" data-placeholder="Choose Link Type" ng-model="sources.link_type">
-                                                                        <option value="">Select</option>
-                                                                        <option ng-repeat="links in linkTypes track by $index" ng-selected="links.id == sources.link_type" value="{{links.id}}">{{ links.name }}</option>
-                                                                     </select>
+                                                                    <option value="">Select</option>
+                                                                    <option ng-repeat="links in linkTypes track by $index" ng-selected="links.id == sources.link_type" value="{{links.id}}">{{ links.name | lowercase }}</option>
+                                                                </select>
                                                             </td>
                                                             <td ng-click="editSource(sources, $index)">
-                                                                 <span ng-hide="sources.editMode">{{ sources.comment}}</span>
-                                                                <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.comment" placeholder="First Name" required="" />
+                                                                <span ng-hide="sources.editMode">{{ sources.comment}}</span>
+                                                                <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.comment" placeholder="Comment" required="" />
                                                             </td>
 
                                                             <td>
@@ -271,6 +288,16 @@
                                                             </td>
                                                         </tr>
                                                     </tbody>
+                                                    <tfoot class="" ng-show="pageArr.length > 1 && sourceList.length > 0">
+                                                        <tr class="footable-paging"><td colspan="12" class="__web-inspector-hide-shortcut__">
+                                                                <ul class="pagination">
+                                                                    <li class="footable-page-nav disabled" ng-click="changeLimitWithButton('previous')"><a style="cursor: pointer;" class="footable-page-link">‹</a></li>
+                                                                    <li ng-repeat="page in pageArr track by $index" class="footable-page visible {{ selectedPage != $index ? '' : 'active' }}" ng-click="changeLimit(page, $index)"><a class="footable-page-link" style="cursor: pointer;">{{ $index + 1}}</a></li>
+                                                                    <li class="footable-page-nav" ng-click="changeLimitWithButton('next')"><a style="cursor: pointer;" class="footable-page-link">›</a></li>
+                                                                </ul>
+                                                            </td>
+                                                        </tr>
+                                                    </tfoot>
                                                 </table>
                                             </div>
                                         </div>
@@ -303,7 +330,6 @@
                             <input ng-model="excelFile" style="height:35px;width:230px;padding:0px;" type="file" class="form-control  btn btn-success fileinput-button"  onchange="angular.element(this).scope().uploadedFile(this)">
                         </div>
                     </div>
-
                 </div>
             </div>
             <div class="modal-footer">

@@ -16,39 +16,36 @@
     <!-- END PAGE TITLE -->
     <div class="mailbox_main">
         <div class="col-xl-12 col-lg-12 col-md-12">
-
             <div class="content">
-                <div class="mailbox-header">
-                    <div class="row">
-                        <div class="col-xl-4">
-                            <div class="inbox-left float-xs-left"><img alt="Profile image"
-                                                                       src="assets/global/image/user.jpg">
-                            </div>
-                            <div class="right-mailbox float-xs-left">
-                                <h3>Miler Hussey</h3>
-                                <h4>Contact List</h4>
-                            </div>
-                        </div>
-                        <div class="col-xl-8">
-                            <form action="#" class="mail_search float-xs-right">
-                                <div class="input-group">
-                                    <input id="search" type="text" class="form-control" name="search"
-                                           placeholder="search..">
-                                    <a href="#" class="input-group-addon search_icon"><i
-                                            class="icon icon_search"></i></a>
+                <div class="mailbox-contain">
+                    <div class="col-xl-2 col-lg-3 col-md-3 sidebar_block">
+                        <div class="row">
+                            <button aria-controls="collapseExample" aria-expanded="false"
+                                    data-target="#collapseExample" data-toggle="collapse" type="button"
+                                    class="mail-toggle">
+                                Mailbox <span class="icon arrow_carrot-down float-xs-right"></span>
+                            </button>
+                            <div class="sidebar_contain collapse" id="collapseExample">
+                                <div class="mail_btn">
+                                    <button type="submit" class="btn btn-primary btn-block mail_compose_btn"
+                                            id="compose_mail">Mail Box
+                                    </button>
                                 </div>
-                            </form>
+                                <ul class="mailbox_sidebar_contain">
+                                    <li><a ui-sref=composemail><span class="icon_mail_alt" aria-hidden="true"></span>Compose</a></li>
+                                    <li><a ui-sref=inbox><span class="icon_wallet" aria-hidden="true"></span>Inbox</a></li>
+                                    <!--<li><a ui-sref=sentmail><span class="icon_mail_alt" aria-hidden="true"></span>Sent</a></li>-->
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="mailbox-contain">
                     <div class="col-xl-10 col-lg-9 col-md-9 right_sidebar_contain">
                         <div class="mailbox_right_contain">
                             <table class="table mail_table">
                                 <tbody>
                                 <tbody>
                                     <tr class="active-table" ng-repeat="mails in mailList" >
-                                        <td class="mail_message" ng-click="viewMail(mails.message_by)">
+                                        <td class="mail_message" ng-click="viewMail(mails.parent_mail_id,mails.user_id)">
 
                                             <div class="inbox-left float-xs-left">
                                                 <img src="assets/global/image/image4-profile.jpg"
@@ -68,37 +65,11 @@
                                             <a href="javascript:void(0)"><i class="icon icon_link_alt"></i></a>
                                         </td>
                                         <td class="mail-time text-xs-right">
-                                            7 Nov 2016
+                                            
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-
-                            <!--                            <div class="pagination_with_gap text-xs-right mail_pagination">
-                                                            <ul class="pagination">
-                                                                <li class="page-item">
-                                                                    <a href="javascript:void(0)"
-                                                                       class="page-link pagination_link" aria-label="Previous">
-                                                                        <span aria-hidden="true">«</span>
-                                                                    </a>
-                                                                </li>
-                                                                <li class="page-item active"><a href="javascript:void(0)"
-                                                                                                class="page-link pagination_link">1</a>
-                                                                </li>
-                                                                <li class="page-item"><a href="javascript:void(0)"
-                                                                                         class="page-link pagination_link">2</a></li>
-                                                                <li class="page-item"><a href="javascript:void(0)"
-                                                                                         class="page-link pagination_link">3</a></li>
-                                                                <li class="page-item"><a href="javascript:void(0)"
-                                                                                         class="page-link pagination_link">4</a></li>
-                                                                <li class="page-item">
-                                                                    <a href="javascript:void(0)"
-                                                                       class="page-link pagination_link" aria-label="Next">
-                                                                        <span aria-hidden="true">»</span>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>-->
                         </div>
                     </div>
                 </div>

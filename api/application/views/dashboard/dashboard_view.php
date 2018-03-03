@@ -8,7 +8,6 @@
                         <span class="fs1" aria-hidden="true" data-icon=""></span>
                         <a href="#">Home</a>
                     </li>
-                    <li class="breadcrumb-item"><a href="#">Components</a></li>
                     <li class="breadcrumb-item active">Dashboard</li>
                 </ol>
             </div>
@@ -55,7 +54,7 @@
                                 </div>
                                 <div class="dashboard_v4_box_title float-xs-right">
                                     <h4><a ng-click="viewBrokenLinks()">{{ brokenLinkCount }}</a></h4>
-                                    <p>Total Broken Links</p>
+                                    <p>Total Broken Sources Links</p>
                                 </div>
                             </div>
                         </div>

@@ -27,33 +27,78 @@ class Report extends MY_Controller {
     public function getLinkStatusReport() {
         $project_id = $this->input->post('project_id');
         $backLinkList = $this->modelObj->getLinkStatusReport($project_id);
+        if ($backLinkList['status'] == 'SUCCESS' && $backLinkList['value']['count'] > 0) {
+            foreach ($backLinkList['value']['list'] as $key => $value) {
+                $checkStatus = $this->url_test($value['backlink']);
+                if (!$checkStatus) {
+                    $backLinkList['value']['list'][$key]['live_status'] = "OFFLINE";
+                } else {
+                    $backLinkList['value']['list'][$key]['live_status'] = "ONLINE";
+                }
+            }
+        }
         echo json_encode($backLinkList);
+    }
+
+    public function url_test($url) {
+        $timeout = 30;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+        $http_respond = curl_exec($ch);
+        $http_respond = trim(strip_tags($http_respond));
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (( $http_code == "200" ) || ( $http_code == "302" )) {
+            return true;
+        } else {
+            return false;
+        }
+        curl_close($ch);
     }
 
     public function saveNewLinkReport() {
         $dataArr = json_decode($this->input->post("data"), TRUE);
-        $dataArr['date'] = date("Y-m-d",  strtotime($dataArr['date']));
-        if(isset($dataArr['link_status']) && $dataArr['link_status']=='COMPLETED'){
-            $dataArr['completed_date'] = isset($dataArr['date']) ?  $dataArr['date'] : date("Y-m-d");
+        $dataArr['date'] = date("Y-m-d", strtotime($dataArr['date']));
+        if (isset($dataArr['link_status']) && $dataArr['link_status'] == 'COMPLETED') {
+            $dataArr['completed_date'] = isset($dataArr['date']) ? $dataArr['date'] : date("Y-m-d");
         }
         $saveResult = $this->modelObj->saveNewLinkReport($dataArr);
+        $insertId = $saveResult["insert_id"];
+        if($saveResult["status"] == "SUCCESS"){
+           $checkStatus = $this->checkBackLinkStatus($insertId,$dataArr['project_id'],$dataArr['backlink']); 
+        }
         echo json_encode($saveResult);
     }
     
+    public function checkBackLinkStatus($backlink_id,$project_id,$source_link) {
+        $insertArr = array();
+        $checkStatus = $this->url_test($source_link);
+        if (!$checkStatus) {
+            $insertArr[] = array("backlink_id" => $backlink_id,"project_id"=>$project_id ,"last_checked_date" => date("Y-m-d"), "type" => "OFFLINE");
+        } else {
+            $insertArr[] = array("backlink_id" => $backlink_id,"project_id"=>$project_id , "last_checked_date" => date("Y-m-d"), "type" => "ONLINE");
+        }
+        if (count($insertArr) > 0) {
+            $this->db->insert_batch("broken_links_details", $insertArr);
+        }
+        return true;
+    }
+
     public function updateLinkReport() {
         $dataArr = json_decode($this->input->post("data"), TRUE);
         $updateId = $this->input->post("id");
         unset($dataArr['repassword']);
         if ($updateId != null && $updateId != '') {
             $prevData = $this->modelObj->getDataBeforeUpdate($updateId);
-            if(isset($dataArr['link_status']) && isset($prevData['link_status']) && $dataArr['link_status']=='COMPLETED' && $prevData['link_status'] !='COMPLETED'){
+            if (isset($dataArr['link_status']) && isset($prevData['link_status']) && $dataArr['link_status'] == 'COMPLETED' && $prevData['link_status'] != 'COMPLETED') {
                 $dataArr['completed_date'] = date("Y-m-d");
             }
             $updateResult = $this->modelObj->updateLinkReport($dataArr, $updateId);
             echo json_encode($updateResult);
         }
     }
-    
+
     public function deleteBackLink() {
         $deleteId = $this->input->post("id");
         if ($deleteId != null && $deleteId != '') {
@@ -67,9 +112,7 @@ class Report extends MY_Controller {
         require_once APPPATH . "core/mozapi/bootstrap.php";
         require_once APPPATH . 'core/phpmailer/class.phpmailer.php';
         $dataArr = json_decode($this->input->post("data"), TRUE);
-        echo '<pre>';
-        print_r($dataArr);
-        exit;
+
 
         // Moz Api Code Starts Here
         $AccessID = 'mozscape-c3c9b9264';

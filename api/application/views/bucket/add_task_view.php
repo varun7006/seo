@@ -41,9 +41,9 @@
                                                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Date</label></div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
-                                                                    <datepicker date-format="{{'dd-MM-yyyy'}}" style="height: 300px !important; width: 300px !important;" >
+                                                                    <div class="datepicker" date-format="{{'dd-MM-yyyy'}}" style="height: 300px !important; width: 300px !important;" >
                                                                         <input class="form-control" type="text" ng-model="task.date"  style="text-align: center;color:black;font-size:12px  "/>
-                                                                    </datepicker>
+                                                                    </div>
                                                                 </div>
                                                                 <!--<span style="color:Red" ng-show="signupForm.email.$dirty && signupForm.email.$error.pattern">Please Enter Valid Date</span>-->
 

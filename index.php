@@ -65,6 +65,8 @@
 //        <script src="http://code.angularjs.org/1.2.13/angular.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
         <script type="text/javascript" src="scripts/angular-datepicker.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
         <script src="scripts/app.js"></script>
         <script src="scripts/app.config.js"></script>
         <script src="scripts/app.router.js"></script>
@@ -78,7 +80,6 @@
         <script src="scripts/services/ngstore.js"></script>
         <script src="scripts/services/ui-load.js"></script>
         <script src="scripts/select.js"></script>
-
         <style>
             #loading-block {
                 position:fixed;
@@ -93,6 +94,21 @@
                 opacity:0.8;
                 filter:alpha(opacity=80);
                 z-index:50000;
+            }
+
+            .accordion-test {
+                width: 600px; 
+            }
+            textarea#styled {
+                width: 800px;
+                height: 120px;
+                margin-top: 5% !important;
+                border: 3px solid #cccccc;
+                padding: 5px;
+                font-family: Tahoma, sans-serif;
+                /*background-image: url(bg.gif);*/
+                background-position: bottom right;
+                background-repeat: no-repeat;
             }
         </style>
     </head>
@@ -135,7 +151,6 @@
                 saveAs(blob, filename);
             }
         </script>
-
         <script src="scripts/controllers/login.js"></script>
         <script src="scripts/controllers/dashboard.js"></script>
         <script src="scripts/controllers/clientdashboard.js"></script>
@@ -150,6 +165,10 @@
         <script src="scripts/controllers/view_mail.js"></script>
         <script src="scripts/controllers/link_status_report.js"></script>
         <script src="scripts/controllers/settings.js"></script>
+
+        <script src="scripts/textAngular/textAngular-rangy.min.js"></script>
+        <script src="scripts/textAngular/textAngular-sanitize.min.js"></script>
+        <script src="scripts/textAngular/textAngular.min.js"></script>
         <script type="text/javascript" src="assets/global/plugins/jquery/dist/jquery.min.js"></script>
         <script type="text/javascript" src="assets/global/plugins/tether/dist/js/tether.min.js"></script>
         <script type="text/javascript" src="assets/global/plugins/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -183,7 +202,7 @@
         <script type="text/javascript" src="assets/layouts/layout-left-icon-menu/js/layout.min.js"></script>
 
         <script type="text/javascript" src="assets/global/plugins/moment/moment.js"></script>
-      
+
         <script type="text/javascript" src="assets/global/js/site.min.js"></script>
         <script type="text/javascript" src="assets/global/js/site-settings.min.js"></script>
 

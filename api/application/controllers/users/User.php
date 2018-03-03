@@ -30,6 +30,31 @@ class User extends MY_Controller {
         $this->load->view('navigation/navigation');
         $this->load->view('user/add_user_view');
     }
+    
+    public function generateUserExcel() {
+        $userList = $this->modelObj->getUserList();
+        
+        if ($userList['status'] == 'SUCCESS' && $userList['value']['count'] > 0) {
+            
+          $table = "<table><tr><th>#</th><th>Name</th><th>Email</th><th>Website</th><th>Phone No</th><th>Address</th><th>Comment</th></tr>";
+          
+          foreach ($userList['value']['list'] as $key => $value) {
+                $table .= "<tr><td>".($key+1)."</td>";
+                $table .= "<td>".$value['name']."</td>";
+                $table .= "<td>".$value['email']."</td>";
+                $table .= "<td>".$value['website']."</td>";
+                $table .= "<td>".$value['mobile_no']."</td>";
+                $table .= "<td>".$value['address']."</td>";
+                $table .= "<td>".$value['comment']."</td>";
+                $table .= "</tr>";
+            }
+            $table .= "</table>";
+            $excelResult = $this->coreObj->getReportDataTypeWiseExcel($table, "exported_clients.xlsx");
+        }else{
+            echo "No Client Found";
+            exit;
+        }
+    }
 
     public function saveNewUser() {
         $dataArr = json_decode($this->input->post("data"), TRUE);

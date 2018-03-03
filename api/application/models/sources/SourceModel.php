@@ -2,21 +2,50 @@
 
 class SourceModel extends CI_Model {
 
-    public function getSourceList() {
+    public function getSourceList($fromLimit, $toLimit) {
         if ($this->session->user_type == 'CLIENT') {
-           $query= "SELECT `a`.*, `b`.`name` as `username`, `d`.`project_name` as `project_name`, `c`.`pa`, `c`.`da`, `c`.`moz_rank`, `c`.`citation_flow`, `c`.`trust_flow`, `c`.`category`,`e`.`name` as link_type FROM `source` as `a` LEFT JOIN `users` as `b` ON `a`.`user_id` = `b`.`id` LEFT JOIN `seo_data` as `c` ON `a`.`id` = `c`.`source_id` LEFT JOIN `project_details` as `d` ON `a`.`project_id` = `d`.`id` LEFT JOIN `link_types` as `e` ON `a`.`link_type` = `e`.`id` WHERE `a`.`status` = 'TRUE' AND (`c`.`status`='TRUE' OR `c`.`status` is null) AND (`e`.`status`='TRUE' OR `e`.`status` is null) AND `a`.`user_id`='".$this->session->user_id."'";     
-        }else{
-            $query= "SELECT `a`.*, `b`.`name` as `username`, `d`.`project_name` as `project_name`, `c`.`pa`, `c`.`da`, `c`.`moz_rank`, `c`.`citation_flow`, `c`.`trust_flow`, `c`.`category`,`e`.`name` as link_type FROM `source` as `a` LEFT JOIN `users` as `b` ON `a`.`user_id` = `b`.`id` LEFT JOIN `seo_data` as `c` ON `a`.`id` = `c`.`source_id` LEFT JOIN `project_details` as `d` ON `a`.`project_id` = `d`.`id` LEFT JOIN `link_types` as `e` ON `a`.`link_type` = `e`.`id` WHERE `a`.`status` = 'TRUE' AND (`c`.`status`='TRUE' OR `c`.`status` is null) AND (`e`.`status`='TRUE' OR `e`.`status` is null)";     
+            $query = "SELECT `a`.*, `b`.`name` as `username`, `c`.`pa`, `c`.`da`, `c`.`moz_rank`, `c`.`citation_flow`, `c`.`trust_flow`, `c`.`category`,`e`.`name` as link_type FROM `source` as `a` LEFT JOIN `users` as `b` ON `a`.`user_id` = `b`.`id` LEFT JOIN `seo_data` as `c` ON `a`.`id` = `c`.`source_id`  LEFT JOIN `link_types` as `e` ON `a`.`link_type` = `e`.`id` WHERE `a`.`status` = 'TRUE' AND (`c`.`status`='TRUE' OR `c`.`status` is null) AND (`e`.`status`='TRUE' OR `e`.`status` is null) AND `a`.`user_id`='" . $this->session->user_id . "' LIMIT $fromLimit,$toLimit";
+        } else {
+            $query = "SELECT `a`.*, `b`.`name` as `username`, `c`.`pa`, `c`.`da`, `c`.`moz_rank`, `c`.`citation_flow`, `c`.`trust_flow`, `c`.`category`,`e`.`name` as link_type FROM `source` as `a` LEFT JOIN `users` as `b` ON `a`.`user_id` = `b`.`id` LEFT JOIN `seo_data` as `c` ON `a`.`id` = `c`.`source_id`  LEFT JOIN `link_types` as `e` ON `a`.`link_type` = `e`.`id` WHERE `a`.`status` = 'TRUE' AND (`c`.`status`='TRUE' OR `c`.`status` is null) AND (`e`.`status`='TRUE' OR `e`.`status` is null) LIMIT $fromLimit,$toLimit";
         }
         $result = $this->db->query($query)->result_array();
-        $sourceCount = count($result);
+
+        if ($this->session->user_type == 'CLIENT') {
+            $countQuery = "SELECT `a`.*, `b`.`name` as `username`, `c`.`pa`, `c`.`da`, `c`.`moz_rank`, `c`.`citation_flow`, `c`.`trust_flow`, `c`.`category`,`e`.`name` as link_type FROM `source` as `a` LEFT JOIN `users` as `b` ON `a`.`user_id` = `b`.`id` LEFT JOIN `seo_data` as `c` ON `a`.`id` = `c`.`source_id`  LEFT JOIN `link_types` as `e` ON `a`.`link_type` = `e`.`id` WHERE `a`.`status` = 'TRUE' AND (`c`.`status`='TRUE' OR `c`.`status` is null) AND (`e`.`status`='TRUE' OR `e`.`status` is null) AND `a`.`user_id`='" . $this->session->user_id . "' ";
+        } else {
+            $countQuery = "SELECT `a`.*, `b`.`name` as `username`, `c`.`pa`, `c`.`da`, `c`.`moz_rank`, `c`.`citation_flow`, `c`.`trust_flow`, `c`.`category`,`e`.`name` as link_type FROM `source` as `a` LEFT JOIN `users` as `b` ON `a`.`user_id` = `b`.`id` LEFT JOIN `seo_data` as `c` ON `a`.`id` = `c`.`source_id`  LEFT JOIN `link_types` as `e` ON `a`.`link_type` = `e`.`id` WHERE `a`.`status` = 'TRUE' AND (`c`.`status`='TRUE' OR `c`.`status` is null) AND (`e`.`status`='TRUE' OR `e`.`status` is null)";
+        }
+        $countResult = $this->db->query($countQuery)->result_array();
+        $sourceCount = count($countResult);
         if ($sourceCount > 0) {
+            $i = $fromLimit + 1;
+            foreach ($result as $key => $value) {
+                $result[$key]['sn'] = $i;
+                $i++;
+            }
             return array("status" => "SUCCESS", "value" => array("list" => $result, "count" => $sourceCount), "message" => "Source List is present");
         } else {
             return array("status" => "ERR", "value" => array(), "message" => "No Source Found");
         }
     }
-    
+
+    public function getSourceProjectList($projectArr) {
+        $this->db->select("a.*");
+        $this->db->from("project_details as a");
+        $this->db->where_in("id", $projectArr);
+        $result = $this->db->get()->result_array();
+        $str = "";
+        if (count($result) > 0) {
+            foreach ($result as $key => $value) {
+                $str .= $value['project_name'] . ", ";
+            }
+            $str = substr($str, 0, -2);
+            return $str;
+        } else {
+            return $str;
+        }
+    }
+
     public function getTagList() {
         $this->db->select("a.*");
         $this->db->from("tags as a");
@@ -31,23 +60,23 @@ class SourceModel extends CI_Model {
             return array("status" => "ERR", "value" => array(), "message" => "Tag List Not Found");
         }
     }
-    
+
     public function saveNewTag($dataArr) {
         $result = $this->db->insert("tags", $dataArr);
-        
+
         if (count($result) > 0) {
             return array("status" => "SUCCESS", "value" => $result, "msg" => "Tag saved successfully.");
         } else {
             return array("status" => "ERR", "value" => "-1", "msg" => "unable to save new Tag.");
         }
     }
-    
+
     public function getBrokenSourceList() {
-        $query= "SELECT `a`.*, `b`.`source_link` as `source_link` FROM `broken_source_details` as `a` LEFT JOIN `source` as `b` ON `a`.`source_id` = `b`.`id` WHERE DATEDIFF(CURDATE(),`a`.`last_online_date`) > '31' AND `a`.`type`='OFFLINE' AND `b`.`status`='TRUE'";     
+        $query = "SELECT `a`.*, `b`.`source_link` as `source_link` FROM `broken_source_details` as `a` LEFT JOIN `source` as `b` ON `a`.`source_id` = `b`.`id` WHERE `a`.`type`='OFFLINE' AND `b`.`status`='TRUE' AND a.`last_checked_date`='" . date('Y-m-d') . "'";
         $result = $this->db->query($query)->result_array();
-       
+
         $sourceCount = count($result);
-        if ($sourceCount > 0 ) {
+        if ($sourceCount > 0) {
             return array("status" => "SUCCESS", "value" => array("list" => $result, "count" => $sourceCount), "message" => "Source List is present");
         } else {
             return array("status" => "ERR", "value" => array(), "message" => "No Source Found");
@@ -56,20 +85,22 @@ class SourceModel extends CI_Model {
 
     public function saveNewSource($dataArr) {
         $result = $this->db->insert("source", $dataArr);
-        if (count($result) > 0) {
-            return array("status" => "SUCCESS", "value" => $result, "msg" => "source details saved successfully.");
+        $insertId = $this->db->insert_id();
+        if ($insertId > 0) {
+            return array("status" => "SUCCESS", "value" => $result, "msg" => "source details saved successfully.", "insert_id" => $insertId);
         } else {
-            return array("status" => "ERR", "value" => "-1", "msg" => "unable to save new source.");
+            return array("status" => "ERR", "value" => "-1", "msg" => "unable to save new source.", "insert_id" => "-1");
         }
     }
 
     public function saveSourceReportData($dataArr) {
-        
+
         $this->db->where('source_id', $dataArr['source_id']);
         $updateResult = $this->db->update('seo_data', array('status' => 'FALSE'));
-        
+
         $result = $this->db->insert("seo_data", $dataArr);
-        if (count($result) > 0) {
+        $insertId = $this->db->insert_id();
+        if ($insertId > 0) {
             return array("status" => "SUCCESS", "value" => $dataArr, "msg" => "report data saved successfully.");
         } else {
             return array("status" => "ERR", "value" => "-1", "msg" => "unable to save new source.");

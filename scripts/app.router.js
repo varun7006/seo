@@ -88,7 +88,7 @@ angular.module('app')
                                     controller: "mailCtrl",
                                 })
                                 .state('mail_view', {
-                                    url: '/mail/mail_view/:client_id',
+                                    url: '/mail/mail_view/:parent_mail_id/:user_id',
                                     templateUrl: baseURL + '/mail/mail_view',
                                     controller: "viewMailCtrl",
                                 })
@@ -102,7 +102,7 @@ angular.module('app')
                                     templateUrl: baseURL + '/settings/viewlinktypes',
                                     controller: "settingsCtrl",
                                 })
-                                 .state('topics', {
+                                .state('topics', {
                                     url: '/settings/topics',
                                     templateUrl: baseURL + '/settings/topicsview',
                                     controller: "settingsCtrl",

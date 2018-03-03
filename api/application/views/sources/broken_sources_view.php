@@ -19,7 +19,7 @@
                         <div class="content dashboard_v4_project_list">
                             <div class="dashboard-content">
                                 <div class="dashboard-header">
-                                    <h4 class="page-content-title float-xs-left">Total {{ brokenSourceCount}} Source </h4>
+                                    <h4 class="page-content-title float-xs-left">Total {{ brokenSourceCount}} Broken Source </h4>
            
                                     <span style="float:right;margin-right: 2%;"><button class="btn btn-warning" onclick="exportData('myDataTable', 'brokensources.xls')">Export to Excel</button></span>
                                 </div>
@@ -39,10 +39,7 @@
                                                                 <th ng-click="orderByField = 'source_link'; reverseSort = !reverseSort" style="cursor: pointer !important;">Source
                                                                     <span ng-show="orderByField == 'source_link'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
                                                                 </th>
-                                                                <th ng-click="orderByField = 'last_online_date'; reverseSort = !reverseSort" style="cursor: pointer !important;">Last Online Date
-                                                                    <span ng-show="orderByField == 'last_online_date'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
-                                                                </th>
-                                                               
+                                                                
                                                                 <th ng-click="orderByField = 'last_checked_date'; reverseSort = !reverseSort" style="cursor: pointer !important;">Last Checked Date
                                                                     <span ng-show="orderByField == 'last_checked_date'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
                                                                 </th>
@@ -53,7 +50,6 @@
                                                             <tr ng-repeat="sources in sourceList| orderBy:orderByField:reverseSort |  filter: searchfield track by $index">
                                                                 <td>{{ $index + 1}}</td>
                                                                 <td>{{ sources.source_link }}</td>
-                                                                <td>{{ sources.last_online_date }}</td>
                                                                 <td>{{ sources.last_checked_date }}</td>
                                                                 <td><button ng-hide="sources.editMode" class="btn btn-mini btn-danger" ng-click="deleteSource(sources.source_id, $index)" id="sa-warning"><i class="fa fa-close"></i></button></td>
                                                             </tr>

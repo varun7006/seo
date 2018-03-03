@@ -1,5 +1,17 @@
 <section id="main" class="container-fluid">
     <section id="content-wrapper" class="form-elements">
+        <div class="site-content-title">
+                <h2 class="float-xs-left content-title-main">Link Status Report</h2>
+                <ol class="breadcrumb float-xs-right">
+                    <li class="breadcrumb-item">
+                        <span class="fs1" aria-hidden="true" data-icon=""></span>
+                        <a ui-sref=dashboard>Home</a>
+                    </li>
+                    <li class="breadcrumb-item" ui-sref=project style="cursor: pointer"><a>Project</a></li>
+                    <li class="breadcrumb-item"><a>Link Report</a></li>
+                </ol>
+               
+            </div>
         <div class="contain-inner dashboard_v4-page" ng-if="showNew == true">
             <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -26,9 +38,9 @@
                                                         <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Date</label></div>
                                                         <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
                                                             <div class="form-group">
-                                                                <datepicker date-format="{{'dd-MM-yyyy'}}" style="height: 50px !important; width: 300px !important;" >
+                                                                <div class="datepicker" date-format="{{'dd-MM-yyyy'}}" style="height: 50px !important; width: 300px !important;" >
                                                                     <input class="form-control" type="text" ng-model="source.date"  style="text-align: center;color:black;font-size:12px  "/>
-                                                                </datepicker>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -196,7 +208,7 @@
                                                                 <option ng-selected="sources.link_status == 'COMPLETED'" value="COMPLETED">completed</option>
                                                             </select>
                                                         </td>
-                                                        <td ng-click="editSource(sources, $index)" title="{{ sources.backlink }}"><span ng-hide="sources.editMode">{{ sources.backlink | limitTo: 40 }}{{sources.backlink > 40 ? '...' : ''}}</span>
+                                                        <td ng-click="editSource(sources, $index)" title="{{ sources.backlink }}"><span ng-hide="sources.editMode"><span style="color:{{sources.live_status !='ONLINE' ? 'Red' : 'Black' }}">{{ sources.backlink | limitTo: 40 }}{{sources.backlink > 40 ? '...' : ''}}</span></span>
                                                             <input type="text" ng-show="sources.editMode" class="form-control" id="exampleInputuname_3" ng-model="sources.backlink" >
                                                         </td>
                                                         <td ng-click="editSource(sources, $index)"><span ng-hide="sources.editMode">{{ sources.anchor}}</span>

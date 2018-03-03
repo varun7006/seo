@@ -21,6 +21,10 @@
         $scope.showModal = false;
         $scope.orderByField = '';
         $scope.reverseSort = false;
+        $scope.showAlert = false;
+        $scope.alertText = "";
+        $scope.alertIcon = "";
+        $scope.alertClass = "";
         $scope.showModal = function () {
             $scope.showModal = true;
         }
@@ -34,11 +38,11 @@
                 if (jsondata.data.status == 'SUCCESS') {
                     $scope.userList = jsondata.data.value.list;
                     $scope.userCount = jsondata.data.value.count;
-                    
+
                     angular.forEach($scope.userList, function (value, key) {
                         $scope.userList[key].editMode = false;
                     });
-                    
+
                 } else {
                     $scope.countryList = [];
                 }
@@ -60,18 +64,6 @@
                     }
                 }
             });
-//            if (emptyField != '' && keepGoing == false) {
-//                $.toast({
-//                    heading: 'Please Fill User Details',
-//                    text: emptyField,
-//                    position: 'top-right',
-//                    loaderBg: '#e69a2a',
-//                    icon: 'error',
-//                    hideAfter: 3500,
-//                    stack: 6
-//                });
-//                return false;
-//            }
             $scope.isAjax = true;
             $http({
                 method: 'POST',
@@ -82,15 +74,28 @@
             }).then(function (jsondata) {
                 $scope.isAjax = false;
                 $scope.showNewUser = false;
-                alert(jsondata.data.msg);
                 if (jsondata.data.status == 'SUCCESS') {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-check";
+                    $scope.alertClass = "alert-success";
                     $scope.user = {};
                     $scope.getUserList();
                 } else {
-
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-times-circle";
+                    $scope.alertClass = "alert-danger";
                 }
             });
 //            
+        }
+
+        $scope.hideAlert = function () {
+            $scope.showAlert = false;
+            $scope.alertText = "";
+            $scope.alertIcon = "";
+            $scope.alertClass = "";
         }
 
 
@@ -105,7 +110,7 @@
             $scope.saveType = "UPDATE";
             $scope.updateId = user.id;
             $scope.index = index;
-            
+
         }
 
         $scope.updateUserDetails = function (user) {
@@ -126,8 +131,12 @@
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function (jsondata) {
                 $scope.isAjax = true;
-                alert(jsondata.data.msg)
+
                 if (jsondata.data.status == 'SUCCESS') {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-check";
+                    $scope.alertClass = "alert-success";
                     $scope.showNewUser = false;
                     $scope.userList[$scope.index].name = $scope.user.name;
                     $scope.userList[$scope.index].email = $scope.user.email;
@@ -139,7 +148,10 @@
                     $scope.userList[$scope.index].editMode = false;
                     $scope.user = {};
                 } else {
-
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-times-circle";
+                    $scope.alertClass = "alert-danger";
                 }
             });
         }
@@ -163,7 +175,17 @@
                 }).then(function (jsondata) {
                     $scope.isAjax = false;
                     if (jsondata.data.status == 'SUCCESS') {
+                        $scope.showAlert = true;
+                        $scope.alertText = jsondata.data.msg;
+                        $scope.alertIcon = "fa-check";
+                        $scope.alertClass = "alert-success";
                         $scope.userList.splice(index, 1);
+                        $scope.userCount = $scope.userCount - 1;
+                    } else {
+                        $scope.showAlert = true;
+                        $scope.alertText = jsondata.data.msg;
+                        $scope.alertIcon = "fa-times-circle";
+                        $scope.alertClass = "alert-danger";
                     }
                 });
             }
@@ -225,9 +247,18 @@
                 }
 
             }).then(function (jsondata) {
-                alert(jsondata.data.msg);
+
                 if (jsondata.data.status == 'SUCCESS') {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-check";
+                    $scope.alertClass = "alert-success";
                     $scope.getUserList();
+                } else {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-times-circle";
+                    $scope.alertClass = "alert-danger";
                 }
             });
         }

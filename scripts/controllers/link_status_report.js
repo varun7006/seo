@@ -77,6 +77,7 @@
         $scope.getLinkTypesList();
 
         $scope.saveNewLinkReportDetails = function () {
+            $scope.source.project_id = $scope.project_id;
             $http({
                 method: 'POST',
                 url: baseURL + '/reports/savenewlinkreport',

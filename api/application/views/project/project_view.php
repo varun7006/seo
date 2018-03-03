@@ -50,10 +50,7 @@
                                                                                         <option value="">Select</option>
                                                                                         <option ng-repeat="user in userList track by $index" ng-selected="project.client_id == source.user_id" value="{{user.id}}">{{user.name}}</option>
                                                                                     </select>
-                                                                                </div>
-                                                                                <!--<span style="color:Red" ng-show="signupForm.email.$dirty && signupForm.email.$error.pattern">Please Enter Valid Date</span>-->
-
-                                                                            </div>
+                                                                                </div>                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 <?php } ?>
@@ -133,8 +130,7 @@
                                                             </th>
                                                             <th>Comment</th>
                                                             <th>Completed Links</th>
-                                                            <th>Broken Links</th>
-                                                            <th>All Source List</th>                                                       
+                                                            <th>Broken Links</th>                                                  
                                                             <th>Action</th>
                                                         </tr>
 
@@ -163,13 +159,13 @@
                                                             <td>
                                                                 <span ng-hide="project.editMode">{{project.broken_links}}</span>
                                                             </td>
-                                                            <td>
+<!--                                                            <td>
                                                                 <table style="background: none;">
                                                                     <tr ng-repeat="source in project.sourcedetails.sourcelist track by $index">
                                                                         <td>{{ source.source_link}}</td>
                                                                     </tr>
                                                                 </table>
-                                                            </td>
+                                                            </td>-->
                                                             <td>
                                                                 <button ng-hide="project.editMode" class="btn btn-mini btn-success" ng-click="viewLinkStatusReport(project)" ><i class="fa fa-eye"></i></button>
                                                                 <button ng-hide="project.editMode" class="btn btn-mini btn-primary" ng-click="editProject(project, $index)" ><i class="fa fa-edit"></i></button>

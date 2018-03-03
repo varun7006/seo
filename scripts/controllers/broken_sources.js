@@ -10,7 +10,7 @@
         $scope.alertArr = {'name': 'Source Name', 'user_id': 'Source User', 'email': 'Source Email', 'source_link': 'Source Link', 'mobile_no': 'Mobile No', 'topics': 'Topics', 'link_status': 'Link Status'};
         $scope.userList = [];
         $scope.showNewSource = false;
-        $scope.sourceCount = 0;
+        $scope.brokenSourceCount = 0;
        
         $scope.updateId = 0;
         $scope.index = 0;
@@ -30,7 +30,7 @@
                 if (jsondata.data.status == 'SUCCESS') {
                     $scope.sourceList = jsondata.data.value.list;
                     
-                    $scope.sourceCount = jsondata.data.value.count;
+                    $scope.brokenSourceCount = jsondata.data.value.count;
                 }
 
             });
@@ -54,6 +54,7 @@
                     alert(jsondata.data.msg)
                     if (jsondata.data.status == 'SUCCESS') {
                         $scope.sourceList.splice(index, 1);
+                        $scope.brokenSourceCount = $scope.brokenSourceCount - 1;
                     }
                 });
             }

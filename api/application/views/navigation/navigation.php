@@ -142,13 +142,19 @@
                 <li class="sub-item">
                     <a href="javascript:void(0)">
                         <i class="icon_tags_alt"></i>
-                        <span>Contact</span>
+                        <span>Mail</span>
                     </a>
                     <ul class="sub-menu">
-                        <li class="menu-title"><span>Contact</span></li>
+                        <li class="menu-title"><span>Mail</span></li>
                         <li>
-                            <a ui-sref=inbox>Contact List</a>
+                            <a ui-sref=composemail>Compose</a>
                         </li>
+                        <li>
+                            <a ui-sref=inbox>Inbox</a>
+                        </li>
+<!--                        <li>
+                            <a ui-sref=sentmail>Sent</a>
+                        </li>-->
                     </ul>
                 </li>
                 <li class="sub-item">

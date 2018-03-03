@@ -5,10 +5,10 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 require_once APPPATH . "core/mozapi/bootstrap.php";
 require_once APPPATH . '/core/PHPExcel.php';
+require_once APPPATH . 'core/phpmailer/class.phpmailer.php';
 
 class Mail extends MY_Controller {
 
-  
     public function __construct() {
         parent::__construct();
         $this->load->model("mail/mailModel", "modelObj");
@@ -28,29 +28,69 @@ class Mail extends MY_Controller {
     public function viewMail() {
         $this->load->view('navigation/navigation');
         $this->load->view('mail/mail_view');
-        
     }
+
     public function getMailList() {
         $mailList = $this->modelObj->getMailList();
 
         echo json_encode($mailList);
     }
 
-    
-
     public function getClientMailList() {
-        $clientId = $this->input->post("client_id");
-        $mailDetails = $this->modelObj->getAllClientMails($clientId);
-        
+        $parentMailId = $this->input->post("parent_mail_id");
+        $userId = $this->input->post("user_id");
+        $mailDetails = $this->modelObj->getAllTrailMails($parentMailId, $userId);
+
         echo json_encode($mailDetails);
     }
 
     public function sendNewMail() {
+        $attachFile = array();
+        if (!empty($_FILES)) {
+            $excelResult = $this->coreObj->mailAttachment();
+            if ($excelResult['status'] == 'SUCCESS') {
+                $attachFile[] = $excelResult['value'];
+            } else {
+                echo json_encode($excelResult);
+                exit;
+            }
+        }
+
         $dataArr = json_decode($this->input->post("data"), TRUE);
-        $dataArr['message_by'] = $this->session->user_id;
+        $type = $this->input->post("type");
+        $dataArr['mail_by'] = $this->session->user_id;
         $dataArr['date'] = date("Y-m-d");
+        if (count($attachFile) > 0) {
+            $dataArr['filepath'] = $attachFile[0];
+        }
+        $dataArr['mail_to'] = $this->getUserIdFromEmail($dataArr['email']);
         $saveResult = $this->modelObj->sendNewMail($dataArr);
-        echo json_encode($saveResult);
+        if ($saveResult['status'] == 'SUCCESS') {
+            $mail = new PHPMailer();
+            $EmailContact[] = $dataArr['email'];
+            $subject = $dataArr['subject'];
+            $message = $dataArr['message'];
+            $emailResult = $this->coreObj->sendEmailToClient(new PHPMailer(), $attachFile, $EmailContact, array(), $subject, $message, $this->db, "SEO-REPORT");
+            if ($emailResult == "true") {
+                if ($type == 'NEW') {
+                    $insertArr = array("parent_mail_id" => $saveResult['value'], "mail_id" => $saveResult['value'], "message" => $dataArr['message'], "mail_id" => $saveResult['value']);
+                } else {
+                    $parentMailId = $this->input->post("parent_mail_id");
+                    $insertArr = array("parent_mail_id" => $parentMailId, "message" => $dataArr['message'], "mail_id" => $saveResult['value']);
+                }
+                $insertResult = $this->modelObj->saveMailTrail($insertArr);
+                echo json_encode($insertResult);
+            } else {
+                echo json_encode(array("status" => "ERR", "value" => array(), "msg" => "Mail not Sent"));
+            }
+        } else {
+            echo json_encode($saveResult);
+        }
+    }
+
+    public function getUserIdFromEmail($emailId) {
+        $result = $this->coreObj->getUserIdFromEmail($emailId);
+        return $result;
     }
 
     public function updateSource() {
@@ -115,7 +155,7 @@ class Mail extends MY_Controller {
     public function sendMail() {
 
         require_once APPPATH . "core/mozapi/bootstrap.php";
-        require_once APPPATH . 'core/phpmailer/class.phpmailer.php';
+
         $dataArr = json_decode($this->input->post("data"), TRUE);
 
 

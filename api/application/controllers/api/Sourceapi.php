@@ -3,6 +3,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
+require_once APPPATH . "core/mozapi/bootstrap.php";
 
 class SourceApi extends CI_Controller {
 
@@ -13,17 +14,116 @@ class SourceApi extends CI_Controller {
 
     public function checkSourceStatus() {
         $sourceList = $this->reportObj->getSourceList();
+
+        $insertArr = array();
         if ($sourceList['status'] == 'SUCCESS' && $sourceList['value']['count'] > 0) {
             foreach ($sourceList['value']['list'] as $key => $value) {
+                $checkStatus = $this->url_test($value['source_link']);
                 if (!$checkStatus) {
-                    echo $website . " is down!";
+                    $insertArr[] = array("source_id" => $value['id'], "last_checked_date" => date("Y-m-d"), "type" => "OFFLINE");
                 } else {
-                    echo $website . " is up!";
+                    $insertArr[] = array("source_id" => $value['id'], "last_checked_date" => date("Y-m-d"), "type" => "ONLINE");
                 }
             }
         }
+        if (count($insertArr) > 0) {
+            $this->db->delete("broken_source_details", array("last_checked_date" => date("Y-m-d")));
+            $this->db->insert_batch("broken_source_details", $insertArr);
+        }
+    }
 
-        $checkStatus = $this->url_test($website);
+    public function checkSourceSeoReport() {
+        $sourceList = $this->reportObj->getSourceList();
+
+        $insertArr = array();
+        $sourceIdArr = array();
+        if ($sourceList['status'] == 'SUCCESS' && $sourceList['value']['count'] > 0) {
+            foreach ($sourceList['value']['list'] as $key => $value) {
+                $sourceIdArr[] = $value['id'];
+                $insertArr[] = $this->getMozAPiData($value['source_link'], $value);
+            }
+        }
+        if (count($insertArr) > 0) {
+            $this->db->where_in('source_id', $sourceIdArr);
+            $updateResult = $this->db->update('seo_data', array('status' => 'FALSE'));
+
+            $result = $this->db->insert_batch("seo_data", $insertArr);
+        }
+    }
+
+    public function getMozAPiData($sourceLink, $dataArr) {
+        // Moz Api Code Starts Here
+        $this->AccessID = 'mozscape-c3c9b9264';
+//        $this->AccessID = 'mozscape-52aa25c665';
+        // Add your secretKey here
+        $this->SecretKey = '57fd4ff492e9d3f6549382ce2879632c';
+//        $this->SecretKey = '8fd4c8750b0125468bcd3da130cae7e9';
+        // Set the rate limit
+        $this->rateLimit = 10;
+
+
+        $urlMetricData = $this->getUrlMetricData();
+
+//        $anchorTextData = $this->getAnchorData();
+        // Moz Api Code Ends Here
+        $reportData = array();
+        if (count($urlMetricData) > 0) {
+            if (isset($urlMetricData['da']) && isset($urlMetricData['pa'])) {
+                $reportData = array("source_id" => $dataArr['id'], "date" => date("Y-m-d"), "moz_rank" => $urlMetricData['moz_rank'], "pa" => $urlMetricData['pa'], "da" => $urlMetricData['da']);
+            } else {
+                $reportData = array("source_id" => $dataArr['id'], "date" => date("Y-m-d"), "moz_rank" => $urlMetricData['moz_rank'], "pa" => 0, "da" => 0);
+            }
+        } else {
+            $reportData = array("source_id" => $dataArr['id'], "date" => date("Y-m-d"), "moz_rank" => $urlMetricData['moz_rank'], "pa" => 0, "da" => 0);
+        }
+        return $reportData;
+    }
+
+    private function getUrlMetricData() {
+
+        $AccessID = 'mozscape-c3c9b9264';
+
+        // Add your secretKey here
+        $SecretKey = '57fd4ff492e9d3f6549382ce2879632c';
+
+        // Set the rate limit
+        $rateLimit = 10;
+
+        $authenticator = new Authenticator();
+        $authenticator->setAccessID($AccessID);
+        $authenticator->setSecretKey($SecretKey);
+        $authenticator->setRateLimit($rateLimit);
+
+        // URL to query
+        $objectURL = "http://www.hestabit.com";
+
+        // Metrics to retrieve (url_metrics_constants.php)
+        $cols = URLMETRICS_COL_DEFAULT;
+        $mozRankCol = URLMETRICS_COL_MOZRANK;
+        $urlMetricsService = new URLMetricsService($authenticator);
+        $response = $urlMetricsService->getUrlMetrics($objectURL, $cols);
+        sleep(10);
+        $mozRank = $urlMetricsService->getUrlMetrics($objectURL, $mozRankCol);
+        return array("moz_rank" => $mozRank['umrp'], "pa" => $response['upa'], "da" => $response['pda']);
+    }
+
+    public function checkBackLinkStatus() {
+        $sourceList = $this->reportObj->getBackLinkList();
+        $insertArr = array();
+        if ($sourceList['status'] == 'SUCCESS' && $sourceList['value']['count'] > 0) {
+            foreach ($sourceList['value']['list'] as $key => $value) {
+                $checkStatus = $this->url_test($value['backlink']);
+                if (!$checkStatus) {
+                    $insertArr[] = array("project_id" => $value['project_id'], "backlink_id" => $value['id'], "last_checked_date" => date("Y-m-d"), "type" => "OFFLINE");
+                } else {
+                    $insertArr[] = array("project_id" => $value['project_id'], "backlink_id" => $value['id'], "last_checked_date" => date("Y-m-d"), "type" => "ONLINE");
+                }
+            }
+        }
+        if (count($insertArr) > 0) {
+            $this->db->delete("broken_links_details", array("last_checked_date" => date("Y-m-d")));
+            $this->db->insert_batch("broken_links_details", $insertArr);
+        }
     }
 
     public function url_test($url) {

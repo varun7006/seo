@@ -15,7 +15,7 @@ class CoreModel extends CI_Model {
             $tempFile = $_FILES['file']['tmp_name'];
 
             $fileType = explode("/", $_FILES['file']['type'])[1];
-            
+
             $targetPath = APPPATH;
             if (!is_dir($targetPath)) {
                 mkdir($targetPath, 0777, true);
@@ -26,12 +26,12 @@ class CoreModel extends CI_Model {
             }
             $filePath = "files/uploadedexcels/" . $_FILES['file']['name'];
             $fileName = $targetPath . $filePath;
-            if(file_exists($fileName)){
+            if (file_exists($fileName)) {
                 unlink($fileName);
             }
-            
+
             if (move_uploaded_file($_FILES['file']['tmp_name'], $fileName)) {
-                chmod($fileName,0777);
+                chmod($fileName, 0777);
                 $result = array('status' => 'SUCCESS', 'msg' => 'File transfer completed', 'value' => "$fileName", 'filepath' => $filePath);
                 return $result;
             } else {
@@ -39,6 +39,47 @@ class CoreModel extends CI_Model {
             }
         } else {
             echo '{"status":"ERR","msg":"Files not uploaded"}';
+        }
+    }
+    
+    public function getReportDataTypeWiseExcel($input,$filename) {
+        $date = date("Y-m-d H:i:s");
+        header("Content-type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=$filename");
+        echo $input;
+        exit;
+    }
+    
+    public function mailAttachment() {
+        if (!empty($_FILES)) {
+
+            $tempFile = $_FILES['file']['tmp_name'];
+
+            $fileType = explode("/", $_FILES['file']['type'])[1];
+
+            $targetPath = APPPATH."files/attachments/";
+            if (!is_dir($targetPath)) {
+                mkdir($targetPath, 0777, true);
+                @chmod($targetPath, 0777);
+            }
+            if (!is_dir($targetPath)) {
+                die('{"status":"ERR","msg":"Unable to create directory"}');
+            }
+            $filePath =  "files/attachments/".$_FILES['file']['name'];
+            $fileName = $targetPath . $_FILES['file']['name'];
+            if (file_exists($fileName)) {
+                unlink($fileName);
+            }
+
+            if (move_uploaded_file($_FILES['file']['tmp_name'], $fileName)) {
+                chmod($fileName, 0777);
+                $result = array('status' => 'SUCCESS', 'msg' => 'File transfer completed', 'value' => $fileName, 'filepath' => $filePath);
+                return $result;
+            } else {
+                return array("status"=>"ERR","msg"=>"Files not written");
+            }
+        } else {
+           return array("status"=>"ERR","msg"=>"Files not uploaded");
         }
     }
 
@@ -54,7 +95,17 @@ class CoreModel extends CI_Model {
         }
     }
 
-    
+    public function getUserIdFromEmail($email) {
+        $this->db->select("a.id,a.email as email_id");
+        $this->db->from("users as a");
+        $this->db->where("a.email",$email);
+        $result = $this->db->get()->row_array();
+        if (count($result) > 0) {
+            return $result['id'];
+        } else {
+            return NULL;
+        }
+    }
 
     public function logFunction($log, $module, $log_time, $user_id) {
         if ($this->db->insert('logs', array('log_detail' => $log, 'module' => $module, 'user_id' => $user_id, 'log_on' => $log_time))) {
@@ -78,8 +129,7 @@ class CoreModel extends CI_Model {
         return $differences;
     }
 
-    public function sendEmailToClient($mail, $attachFile, $EmailContactJson,$ccEmailContactJson, $subject, $msgContent, $dbobj, $traderName) {
-
+    public function sendEmailToClient($mail, $attachFile, $EmailContactJson, $ccEmailContactJson, $subject, $msgContent, $dbobj, $traderName) {
         if ($traderName == "NA") {
             return "false";
         } else {

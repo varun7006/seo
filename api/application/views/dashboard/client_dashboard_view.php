@@ -8,7 +8,6 @@
                         <span class="fs1" aria-hidden="true" data-icon=""></span>
                         <a href="#">Home</a>
                     </li>
-                    <li class="breadcrumb-item"><a href="#">Components</a></li>
                     <li class="breadcrumb-item active">Dashboard</li>
                 </ol>
             </div>

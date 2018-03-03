@@ -11,6 +11,7 @@ class MY_Controller extends CI_Controller {
 
         if (!$this->session->userdata('user_id')) {
             $this->output->set_status_header('401');
+            exit;
         }
     }
 

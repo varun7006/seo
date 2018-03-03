@@ -36,8 +36,9 @@
 
         $scope.getSourceList = function () {
             $http({
-                method: 'GET',
+                method: 'POST',
                 url: baseURL + '/sources/getsourcelist',
+                data: 'from_limit=' + encodeURIComponent(0) + '&to_limit=' + encodeURIComponent(100),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function (jsondata) {
                 if (jsondata.data.status == 'SUCCESS') {

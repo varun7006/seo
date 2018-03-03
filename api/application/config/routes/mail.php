@@ -1,5 +1,5 @@
 <?php
-
+$route['mail/mail'] = 'mail/Mail/composeMailView';
 $route['mail/composemail'] = 'mail/Mail/composeMailView';
 $route['mail/inbox'] = 'mail/Mail/inboxView';
 $route['mail/getmaillist'] = 'mail/Mail/getMailList';

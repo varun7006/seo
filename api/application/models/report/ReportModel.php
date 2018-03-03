@@ -3,9 +3,8 @@
 class ReportModel extends CI_Model {
 
     public function getSourceList() {
-        $this->db->select("a.*,b.name as username");
+        $this->db->select("a.*");
         $this->db->from("source as a");
-        $this->db->join("users as b", "a.user_id = b.id", "LEFT");
         $this->db->where("a.status", "TRUE");
         $result = $this->db->get()->result_array();
         $sourceCount = count($result);
@@ -16,6 +15,17 @@ class ReportModel extends CI_Model {
         }
     }
 
+    public function getBackLinkList() {
+        $this->db->select("a.backlink,a.project_id,a.id");
+        $this->db->where("a.status", "TRUE");
+        $result = $this->db->get("link_status_report as a")->result_array();
+        $sourceCount = count($result);
+        if ($sourceCount > 0) {
+            return array("status" => "SUCCESS", "value" => array("list" => $result, "count" => $sourceCount), "message" => "Links List is present");
+        } else {
+            return array("status" => "ERR", "value" => array(), "message" => "No Link Found");
+        }
+    }
     public function getLinkStatusReport($project_id) {
         $this->db->select("a.*,b.project_name,c.name as link_type_name");
         $this->db->from("link_status_report as a");
@@ -49,10 +59,11 @@ class ReportModel extends CI_Model {
 
     public function saveNewLinkReport($dataArr) {
         $result = $this->db->insert("link_status_report", $dataArr);
-        if (count($result) > 0) {
-            return array("status" => "SUCCESS", "value" => $result, "msg" => "Back Link details saved successfully.");
+        $insertId = $this->db->insert_id();
+        if ($insertId > 0) {
+            return array("status" => "SUCCESS", "value" => $result, "msg" => "Back Link details saved successfully.","insert_id"=>$insertId);
         } else {
-            return array("status" => "ERR", "value" => "-1", "msg" => "unable to save new Back Link.");
+            return array("status" => "ERR", "value" => "-1", "msg" => "unable to save new Back Link.","insert_id"=>"-1");
         }
     }
 

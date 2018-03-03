@@ -137,7 +137,20 @@
 </div>
 <div class="row">
     <section id="content-wrapper" class="form-elements">
-
+        <div class="row" ng-show="showAlert==true">
+            <div class="col-xs-2"></div>
+            <div class="col-xs-8">
+                <div class="alert-dark-background">
+                    <div class="alert {{ alertClass }} alert-dismissible fade in" role="alert">
+                        <button type="button" class="close" ng-click="hideAlert()">
+                            <span >×</span>
+                        </button>
+                        <i class="fa {{ alertIcon }}"></i><strong></strong>{{ alertText }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-2"></div>
+        </div>
         <div class="contain-inner dashboard_v4-page">
             <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -146,7 +159,7 @@
                             <div class="dashboard-header">
                                 <h4 class="page-content-title float-xs-left">Total {{ userCount }} Clients</h4>
                                 <span style="float:right"><button type="button" class="btn btn-primary" ng-click="addNewUser()">Add New</button></span>
-                                <span style="float:right;margin-right: 2%;"><button class="btn btn-warning" onclick="exportData('myDataTable', 'user.xls')">Export to Excel</button></span>
+                                <span style="float:right;margin-right: 2%;"><a href="api/index.php/users/generateuserexcel" target="_blank"><button class="btn btn-warning" >Export to Excel</button></a></span>
                                 <!--<span style="float:right;margin-right: 2%;"><button type="button" class="btn btn-mini btn-success" data-toggle="modal" data-target="#defaultmodal">Upload Excel</button></span>-->
                             </div>
                             <div class="dashboard-box">

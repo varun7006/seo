@@ -47,10 +47,20 @@ class Source extends MY_Controller {
     }
 
     public function getSourceList() {
-        $sourceList = $this->modelObj->getSourceList();
+        $fromLimit = $this->input->post("from_limit");
+        $toLimit = $this->input->post("to_limit");
+        $sourceList = $this->modelObj->getSourceList($fromLimit,$toLimit);
         if ($sourceList["status"] == "SUCCESS") {
             foreach ($sourceList['value']['list'] as $key => $value) {
                 $sourceList['value']['list'][$key]['exact_link'] = $value['source_link'];
+                $projectArr = explode(",", $value['project_id']);
+                if (count($projectArr) > 0) {
+                    $projectStr = "";
+                    $projectStr = $this->modelObj->getSourceProjectList($projectArr);
+                    $sourceList['value']['list'][$key]['project_list'] = $projectStr;
+                } else {
+                    $sourceList['value']['list'][$key]['project_list'] = "";
+                }
                 $sourceList['value']['list'][$key]['source_link'] = $this->getDomainName($value['source_link']);
             }
         }
@@ -89,6 +99,182 @@ class Source extends MY_Controller {
             }
         }
         echo json_encode($sourceDetails);
+    }
+
+    public function saveNewSource() {
+        $projectArr = array();
+        $dataArr = json_decode($this->input->post("data"), TRUE);
+        if (isset($dataArr['project_id'])) {
+            $projectArr = $dataArr['project_id'];
+            if (count($dataArr['project_id']) > 1) {
+                $projectArrStr = implode(",", $dataArr['project_id']);
+            } else {
+                $projectArrStr = isset($dataArr['project_id'][0]) ? $dataArr['project_id'][0] : 0;
+            }
+            $dataArr['project_id'] = $projectArrStr;
+        }
+        $saveResult = $this->modelObj->saveNewSource($dataArr);
+        $insertId = $saveResult["insert_id"];
+        if($saveResult["status"] == "SUCCESS"){
+           $checkStatus = $this->checkSourceStatus($insertId,$dataArr['source_link']); 
+        }
+        if (isset($dataArr['project_id']) && $saveResult["status"] == "SUCCESS" && isset($saveResult["insert_id"])) {
+            $backLinkInsertArr = array();
+            foreach ($projectArr as $key => $projectId) {
+                $backLinkInsertArr[] = array("backlink" => $dataArr['source_link'], "source_id" => $insertId, "project_id" => $projectId, "date" => date("Y-m-d"));
+            }
+            if (count($backLinkInsertArr) > 0) {
+                $this->db->insert_batch("link_status_report", $backLinkInsertArr);
+            }
+        }
+        if (isset($dataArr['topics'])) {
+            $tagList = array();
+            $tagList = $this->modelObj->getTagList();
+            if (!in_array($dataArr['topics'], $tagList['value'])) {
+                $saveTagResult = $this->modelObj->saveNewTag(array("tag" => $dataArr['topics']));
+            }
+        }
+        echo json_encode($saveResult);
+    }
+
+    public function updateSource() {
+        $projectArr = array();
+        $dataArr = json_decode($this->input->post("data"), TRUE);
+        $updateId = $this->input->post("id");
+        unset($dataArr['repassword']);
+        if (isset($dataArr['project_id']) && is_array($dataArr['project_id'])) {
+            $projectArr = $dataArr['project_id'];
+            $projectArrStr = implode(",", $dataArr['project_id']);
+            $dataArr['project_id'] = $projectArrStr;
+            $updateSourceProject = $this->updateSourceProjectDetails($updateId, $projectArr, $dataArr['source_link']);
+        }
+        if ($updateId != null && $updateId != '') {
+            $updateResult = $this->modelObj->updateSourceDetails($dataArr, $updateId);
+            echo json_encode($updateResult);
+        }
+    }
+
+    public function checkSourceStatus($source_id,$source_link) {
+        $insertArr = array();
+        $checkStatus = $this->url_test($source_link);
+        if (!$checkStatus) {
+            $insertArr[] = array("source_id" => $source_id, "last_checked_date" => date("Y-m-d"), "type" => "OFFLINE");
+        } else {
+            $insertArr[] = array("source_id" => $source_id, "last_checked_date" => date("Y-m-d"), "type" => "ONLINE");
+        }
+        if (count($insertArr) > 0) {
+            $this->db->insert_batch("broken_source_details", $insertArr);
+        }
+        return true;
+    }
+
+    public function updateSourceProjectDetails($source_id, $projectArr, $sourceLink) {
+        $this->db->select("*");
+        $this->db->from("link_status_report");
+        $this->db->where("status", "TRUE");
+        $this->db->where("source_id", $source_id);
+        $result = $this->db->get()->result_array();
+        if (count($result) > 0) {
+            $previousProjectArr = array();
+            foreach ($result as $key => $value) {
+                $previousProjectArr[] = $value['project_id'];
+            }
+
+            $backLinkInsertArr = array();
+            foreach ($projectArr as $projectId) {
+                if (!in_array($projectId, $previousProjectArr)) {
+                    $backLinkInsertArr[] = array("backlink" => $sourceLink, "source_id" => $source_id, "project_id" => $projectId, "date" => date("Y-m-d"));
+                }
+            }
+            foreach ($previousProjectArr as $projectId) {
+                if (!in_array($projectId, $projectArr)) {
+                    $this->db->where('project_id', $projectId);
+                    $this->db->where('source_id', $source_id);
+                    $updateResult = $this->db->update('link_status_report', array("status" => "FALSE"));
+                }
+            }
+            if (count($backLinkInsertArr) > 0) {
+                $this->db->insert_batch("link_status_report", $backLinkInsertArr);
+            }
+        } else {
+            $backLinkInsertArr = array();
+            foreach ($projectArr as $key => $projectId) {
+                $backLinkInsertArr[] = array("backlink" => $sourceLink, "source_id" => $source_id, "project_id" => $projectId, "date" => date("Y-m-d"));
+            }
+            if (count($backLinkInsertArr) > 0) {
+                $this->db->insert_batch("link_status_report", $backLinkInsertArr);
+            }
+        }
+    }
+
+    public function deleteSource() {
+        $deleteId = $this->input->post("id");
+        if ($deleteId != null && $deleteId != '') {
+            $deleteResult = $this->modelObj->deleteSource($deleteId);
+            $this->db->where('source_id', $deleteId);
+            $updateResult = $this->db->update('link_status_report', array("status" => "FALSE"));
+
+            echo json_encode($deleteResult);
+        }
+    }
+    
+    public function url_test($url) {
+        $timeout = 30;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+        $http_respond = curl_exec($ch);
+        $http_respond = trim(strip_tags($http_respond));
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (( $http_code == "200" ) || ( $http_code == "302" )) {
+            return true;
+        } else {
+            // return $http_code;, possible too
+            return false;
+        }
+        curl_close($ch);
+    }
+
+    public function generateSourceExcel() {
+        $sourceList = $this->modelObj->getSourceList();
+        if ($sourceList["status"] == "SUCCESS") {
+            foreach ($sourceList['value']['list'] as $key => $value) {
+                $sourceList['value']['list'][$key]['exact_link'] = $value['source_link'];
+                $projectArr = explode(",", $value['project_id']);
+                if (count($projectArr) > 0) {
+                    $projectStr = "";
+                    $projectStr = $this->modelObj->getSourceProjectList($projectArr);
+                    $sourceList['value']['list'][$key]['project_list'] = $projectStr;
+                } else {
+                    $sourceList['value']['list'][$key]['project_list'] = "";
+                }
+                $sourceList['value']['list'][$key]['source_link'] = $this->getDomainName($value['source_link']);
+            }
+        }
+        $table = "";
+        if ($sourceList['status'] == 'SUCCESS' && $sourceList['value']['count'] > 0) {
+
+            $table = "<table><tr><th>#</th><th>Source</th><th>Email</th><th>Name</th><th>Topics</th><th>PA</th><th>DA</th><th>Moz Rank</th><th>Project</th><th>Link Type</th><th>Comment</th></tr>";
+
+            foreach ($sourceList['value']['list'] as $key => $value) {
+                $table .= "<tr><td>" . ($key + 1) . "</td>";
+                $table .= "<td>" . $value['source_link'] . "</td>";
+                $table .= "<td>" . $value['email'] . "</td>";
+                $table .= "<td>" . $value['name'] . "</td>";
+                $table .= "<td>" . $value['topics'] . "</td>";
+                $table .= "<td>" . $value['pa'] . "</td>";
+                $table .= "<td>" . $value['da'] . "</td>";
+                $table .= "<td>" . $value['moz_rank'] . "</td>";
+                $table .= "<td>" . $value['link_type'] . "</td>";
+                $table .= "<td>" . $value['comment'] . "</td>";
+                $table .= "</tr>";
+            }
+            $table .= "</table>";
+            $excelResult = $this->coreObj->getReportDataTypeWiseExcel($table, "exported_sources.xlsx");
+        } else {
+            echo "There are no sources present";
+        }
     }
 
     public function getDomainName($url) {
@@ -206,48 +392,13 @@ class Source extends MY_Controller {
         exit;
     }
 
-    public function saveNewSource() {
-        $dataArr = json_decode($this->input->post("data"), TRUE);
-        if(isset($dataArr['project_id'])){
-            $projectArr = implode(",", $dataArr['project_id']);
-            $dataArr['project_id'] = $projectArr;
-        }
-        $saveResult = $this->modelObj->saveNewSource($dataArr);
-        if (isset($dataArr['topics'])) {
-            $tagList = array();
-            $tagList = $this->modelObj->getTagList();
-            if (!in_array($dataArr['topics'], $tagList['value'])) {
-                $saveTagResult = $this->modelObj->saveNewTag(array("tag" => $dataArr['topics']));
-            }
-        }
-        echo json_encode($saveResult);
-    }
-
-    public function updateSource() {
-        $dataArr = json_decode($this->input->post("data"), TRUE);
-        $updateId = $this->input->post("id");
-        unset($dataArr['repassword']);
-        if ($updateId != null && $updateId != '') {
-            $updateResult = $this->modelObj->updateSourceDetails($dataArr, $updateId);
-            echo json_encode($updateResult);
-        }
-    }
-
-    public function deleteSource() {
-        $deleteId = $this->input->post("id");
-        if ($deleteId != null && $deleteId != '') {
-            $deleteResult = $this->modelObj->deleteSource($deleteId);
-            echo json_encode($deleteResult);
-        }
-    }
-
     public function saveExcel() {
 
         $excelResult = array();
         if (!empty($_FILES)) {
             $excelResult = $this->coreObj->excelUpload();
             $objPHPExcel = PHPExcel_IOFactory::load($excelResult['value']);
-            $sheetData = $objPHPExcel->getActiveSheet()->rangeToArray('A1:F105');
+            $sheetData = $objPHPExcel->getActiveSheet()->rangeToArray('A1:F10000');
 
             $headercolArr = array("SOURCE", "NAME", "EMAIL", "TOPICS", "MOBILE NO.", "LINK TYPE");
 

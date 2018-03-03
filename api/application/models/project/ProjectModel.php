@@ -26,7 +26,7 @@ class ProjectModel extends CI_Model {
     }
     
      public function getTotalBrokenLinks($projectId) {
-        $query= "SELECT count(`a`.`id`) as link_count FROM `broken_links_details` as `a` LEFT JOIN `project_details` as `b` ON `a`.`project_id` = `b`.`id` WHERE DATEDIFF(CURDATE(),`a`.`last_online_date`) > '31' AND `a`.`type`='OFFLINE' AND `b`.`status`='TRUE' AND `a`.project_id='$projectId'";     
+        $query= "SELECT count(`a`.`id`) as link_count FROM `broken_links_details` as `a` LEFT JOIN `project_details` as `b` ON `a`.`project_id` = `b`.`id` JOIN `link_status_report` as c on `a`.`backlink_id` = `c`.`id` WHERE `a`.`type`='OFFLINE' AND `b`.`status`='TRUE' AND `a`.project_id='$projectId' AND `a`.`last_checked_date`='".date('Y-m-d')."' AND `c`.`status`='TRUE'";     
         $result = $this->db->query($query)->row_array();
        
         return $result['link_count'];
