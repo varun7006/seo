@@ -238,7 +238,7 @@
                                                             <td>{{ sources.sn }}</td>
                                                             <td ng-click="editSource(sources, $index)">
                                                                 <span ng-hide="sources.editMode"><a href="{{ sources.exact_link | lowercase }}" target="_blank" >{{ sources.source_link}}</a></span>
-                                                                <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.source_link" placeholder="Source Link" required="" />
+                                                                <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.exact_link" placeholder="Source Link" required="" />
                                                             </td>
                                                             <td ng-click="editSource(sources, $index)">
                                                                 <span ng-hide="sources.editMode"><a href="mailto:{{ sources.email | lowercase }}">{{ sources.email}}</a></span>

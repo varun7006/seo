@@ -94,7 +94,20 @@
 </div>
 <div class="row">
     <section id="content-wrapper" class="form-elements">
-
+        <div class="row" ng-show="showAlert==true">
+            <div class="col-xs-2"></div>
+            <div class="col-xs-8">
+                <div class="alert-dark-background">
+                    <div class="alert {{ alertClass }} alert-dismissible fade in" role="alert">
+                        <button type="button" class="close" ng-click="hideAlert()">
+                            <span >×</span>
+                        </button>
+                        <i class="fa {{ alertIcon }}"></i><strong></strong>{{ alertText }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-2"></div>
+        </div>
         <div class="contain-inner dashboard_v4-page">
             <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">

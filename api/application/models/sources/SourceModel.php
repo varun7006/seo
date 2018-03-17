@@ -28,7 +28,22 @@ class SourceModel extends CI_Model {
             return array("status" => "ERR", "value" => array(), "message" => "No Source Found");
         }
     }
-
+    
+    public function getSourceListExcel() {
+        if ($this->session->user_type == 'CLIENT') {
+            $query = "SELECT `a`.*, `b`.`name` as `username`, `c`.`pa`, `c`.`da`, `c`.`moz_rank`, `c`.`citation_flow`, `c`.`trust_flow`, `c`.`category`,`e`.`name` as link_type FROM `source` as `a` LEFT JOIN `users` as `b` ON `a`.`user_id` = `b`.`id` LEFT JOIN `seo_data` as `c` ON `a`.`id` = `c`.`source_id`  LEFT JOIN `link_types` as `e` ON `a`.`link_type` = `e`.`id` WHERE `a`.`status` = 'TRUE' AND (`c`.`status`='TRUE' OR `c`.`status` is null) AND (`e`.`status`='TRUE' OR `e`.`status` is null) AND `a`.`user_id`='" . $this->session->user_id . "'";
+        } else {
+            $query = "SELECT `a`.*, `b`.`name` as `username`, `c`.`pa`, `c`.`da`, `c`.`moz_rank`, `c`.`citation_flow`, `c`.`trust_flow`, `c`.`category`,`e`.`name` as link_type FROM `source` as `a` LEFT JOIN `users` as `b` ON `a`.`user_id` = `b`.`id` LEFT JOIN `seo_data` as `c` ON `a`.`id` = `c`.`source_id`  LEFT JOIN `link_types` as `e` ON `a`.`link_type` = `e`.`id` WHERE `a`.`status` = 'TRUE' AND (`c`.`status`='TRUE' OR `c`.`status` is null) AND (`e`.`status`='TRUE' OR `e`.`status` is null)";
+        }
+        $result = $this->db->query($query)->result_array();
+        $sourceCount = count($result);
+        if ($sourceCount > 0) {
+            return array("status" => "SUCCESS", "value" => array("list" => $result, "count" => $sourceCount), "message" => "Source List is present");
+        } else {
+            return array("status" => "ERR", "value" => array(), "message" => "No Source Found");
+        }
+    }
+    
     public function getSourceProjectList($projectArr) {
         $this->db->select("a.*");
         $this->db->from("project_details as a");

@@ -34,7 +34,9 @@ class SourceApi extends CI_Controller {
 
     public function checkSourceSeoReport() {
         $sourceList = $this->reportObj->getSourceList();
-
+//        echo "<pre>";
+//        print_r($sourceList);
+//        exit;
         $insertArr = array();
         $sourceIdArr = array();
         if ($sourceList['status'] == 'SUCCESS' && $sourceList['value']['count'] > 0) {
@@ -62,7 +64,7 @@ class SourceApi extends CI_Controller {
         $this->rateLimit = 10;
 
 
-        $urlMetricData = $this->getUrlMetricData();
+        $urlMetricData = $this->getUrlMetricData($sourceLink);
 
 //        $anchorTextData = $this->getAnchorData();
         // Moz Api Code Ends Here
@@ -79,7 +81,7 @@ class SourceApi extends CI_Controller {
         return $reportData;
     }
 
-    private function getUrlMetricData() {
+    private function getUrlMetricData($sourceLink) {
 
         $AccessID = 'mozscape-c3c9b9264';
 
@@ -95,7 +97,7 @@ class SourceApi extends CI_Controller {
         $authenticator->setRateLimit($rateLimit);
 
         // URL to query
-        $objectURL = "http://www.hestabit.com";
+        $objectURL = $sourceLink;
 
         // Metrics to retrieve (url_metrics_constants.php)
         $cols = URLMETRICS_COL_DEFAULT;

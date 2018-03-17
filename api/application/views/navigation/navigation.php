@@ -152,9 +152,6 @@
                         <li>
                             <a ui-sref=inbox>Inbox</a>
                         </li>
-<!--                        <li>
-                            <a ui-sref=sentmail>Sent</a>
-                        </li>-->
                     </ul>
                 </li>
                 <li class="sub-item">

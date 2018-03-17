@@ -121,6 +121,21 @@
                         </li>
                     </ul>
                 </li>
+                <li class="sub-item">
+                    <a href="javascript:void(0)">
+                        <i class="icon_tags_alt"></i>
+                        <span>Mail</span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="menu-title"><span>Mail</span></li>
+                        <li>
+                            <a ui-sref=composemail>Compose</a>
+                        </li>
+                        <li>
+                            <a ui-sref=inbox>Inbox</a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         <?php }?>
             

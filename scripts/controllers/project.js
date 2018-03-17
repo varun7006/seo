@@ -7,7 +7,7 @@
     function appCtrl($scope, $http, $state) {
         $scope.project = {'project_name': '', 'client_id': ''};
         $scope.projectList = [];
-        
+
         $scope.userList = [];
         $scope.showNewProject = false;
         $scope.projectCount = 0;
@@ -19,6 +19,12 @@
         $scope.reverseSort = false;
         $scope.form = [];
         $scope.files = [];
+
+        $scope.showAlert = false;
+        $scope.alertText = "";
+        $scope.alertIcon = "";
+        $scope.alertClass = "";
+
         $scope.getProjectList = function () {
             $http({
                 method: 'GET',
@@ -47,26 +53,42 @@
                 data: 'data=' + encodeURIComponent(angular.toJson($scope.project)),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function (jsondata) {
-                alert(jsondata.data.msg)
+                $scope.getProjectList();
                 if (jsondata.data.status == 'SUCCESS') {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-check";
+                    $scope.alertClass = "alert-success";
                     $scope.project = {};
                     $scope.showNewProject = false;
                     $state.go('project')
                 } else {
-
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-times-circle";
+                    $scope.alertClass = "alert-danger";
                 }
             });
 //            
         }
 
 
+        $scope.hideAlert = function () {
+            $scope.showAlert = false;
+            $scope.alertText = "";
+            $scope.alertIcon = "";
+            $scope.alertClass = "";
+        }
+
+
         $scope.addNewProject = function () {
             $scope.showNewProject = true;
+            $scope.saveType = "SAVE";
         }
 
         $scope.editProject = function (projectObj, index) {
             projectObj.editMode = true;
-            
+
 //            $scope.showNewProject = true;
             $scope.saveType = "UPDATE";
             $scope.updateId = projectObj.id;
@@ -76,11 +98,11 @@
 
         $scope.updateProjectDetails = function (projectObj) {
             $scope.isAjax = true;
-            
+
             $scope.project.project_name = projectObj.project_name;
             $scope.project.client_id = projectObj.client_id;
             $scope.project.comment = projectObj.comment;
-            
+
             $http({
                 method: 'POST',
                 url: baseURL + '/project/updateproject',
@@ -89,27 +111,35 @@
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function (jsondata) {
                 $scope.isAjax = false;
-                alert(jsondata.data.msg)
                 $scope.showNewProject = false;
                 projectObj.editMode = false;
                 if (jsondata.data.status == 'SUCCESS') {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-check";
+                    $scope.alertClass = "alert-success";
                     $scope.showNewProject = false;
                     $scope.projectList[$scope.index].project_name = $scope.project.project_name;
                     $scope.projectList[$scope.index].client_id = $scope.project.client_id;
 //                    $scope.projectList[$scope.index].client_name = 
                     $scope.projectList[$scope.index].editMode = false;
                     $scope.project = {};
+                } else {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-times-circle";
+                    $scope.alertClass = "alert-danger";
                 }
             });
         }
 
-        $scope.cancelProject  = function (project) {
+        $scope.cancelProject = function (project) {
             $scope.showNewProject = false;
             project.editMode = false;
             $scope.project = {};
         }
 
-        $scope.deleteProject  = function (id, index) {
+        $scope.deleteProject = function (id, index) {
             $scope.updateId = id;
             if (confirm("Are you sure you want to delete this Project?")) {
                 $scope.isAjax = false;
@@ -121,9 +151,17 @@
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).then(function (jsondata) {
                     $scope.isAjax = true;
-                    alert(jsondata.data.msg)
                     if (jsondata.data.status == 'SUCCESS') {
+                        $scope.showAlert = true;
+                        $scope.alertText = jsondata.data.msg;
+                        $scope.alertIcon = "fa-check";
+                        $scope.alertClass = "alert-success";
                         $scope.projectList.splice(index, 1);
+                    } else {
+                        $scope.showAlert = true;
+                        $scope.alertText = jsondata.data.msg;
+                        $scope.alertIcon = "fa-times-circle";
+                        $scope.alertClass = "alert-danger";
                     }
                 });
             }
@@ -147,7 +185,7 @@
         $scope.getUserList();
 
         $scope.viewLinkStatusReport = function (project) {
-           $state.go('link_status_report', {'project_id': btoa(project.id)});
+            $state.go('link_status_report', {'project_id': btoa(project.id)});
         }
 
     }

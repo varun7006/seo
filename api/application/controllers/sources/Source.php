@@ -49,7 +49,7 @@ class Source extends MY_Controller {
     public function getSourceList() {
         $fromLimit = $this->input->post("from_limit");
         $toLimit = $this->input->post("to_limit");
-        $sourceList = $this->modelObj->getSourceList($fromLimit,$toLimit);
+        $sourceList = $this->modelObj->getSourceList($fromLimit, $toLimit);
         if ($sourceList["status"] == "SUCCESS") {
             foreach ($sourceList['value']['list'] as $key => $value) {
                 $sourceList['value']['list'][$key]['exact_link'] = $value['source_link'];
@@ -115,8 +115,8 @@ class Source extends MY_Controller {
         }
         $saveResult = $this->modelObj->saveNewSource($dataArr);
         $insertId = $saveResult["insert_id"];
-        if($saveResult["status"] == "SUCCESS"){
-           $checkStatus = $this->checkSourceStatus($insertId,$dataArr['source_link']); 
+        if ($saveResult["status"] == "SUCCESS") {
+            $checkStatus = $this->checkSourceStatus($insertId, $dataArr['source_link']);
         }
         if (isset($dataArr['project_id']) && $saveResult["status"] == "SUCCESS" && isset($saveResult["insert_id"])) {
             $backLinkInsertArr = array();
@@ -154,7 +154,7 @@ class Source extends MY_Controller {
         }
     }
 
-    public function checkSourceStatus($source_id,$source_link) {
+    public function checkSourceStatus($source_id, $source_link) {
         $insertArr = array();
         $checkStatus = $this->url_test($source_link);
         if (!$checkStatus) {
@@ -217,7 +217,7 @@ class Source extends MY_Controller {
             echo json_encode($deleteResult);
         }
     }
-    
+
     public function url_test($url) {
         $timeout = 30;
         $ch = curl_init();
@@ -237,7 +237,7 @@ class Source extends MY_Controller {
     }
 
     public function generateSourceExcel() {
-        $sourceList = $this->modelObj->getSourceList();
+        $sourceList = $this->modelObj->getSourceListExcel();
         if ($sourceList["status"] == "SUCCESS") {
             foreach ($sourceList['value']['list'] as $key => $value) {
                 $sourceList['value']['list'][$key]['exact_link'] = $value['source_link'];
@@ -398,9 +398,8 @@ class Source extends MY_Controller {
         if (!empty($_FILES)) {
             $excelResult = $this->coreObj->excelUpload();
             $objPHPExcel = PHPExcel_IOFactory::load($excelResult['value']);
-            $sheetData = $objPHPExcel->getActiveSheet()->rangeToArray('A1:F10000');
-
-            $headercolArr = array("SOURCE", "NAME", "EMAIL", "TOPICS", "MOBILE NO.", "LINK TYPE");
+            $sheetData = $objPHPExcel->getActiveSheet(0)->rangeToArray('A1:H10000');
+            $headercolArr = array("SOURCE", "NAME", "EMAIL", "TOPICS", "MOBILE NO.", "LINK TYPE","COMMENT");
 
             foreach ($headercolArr as $key => $value) {
                 if ($sheetData[0][$key] != $value) {
@@ -408,6 +407,7 @@ class Source extends MY_Controller {
                     exit;
                 }
             }
+
 
             $insertArr = array();
             for ($i = 1; $i < count($sheetData); $i++) {
@@ -419,6 +419,7 @@ class Source extends MY_Controller {
                     $tmpArr['topics'] = $sheetData[$i][3];
                     $tmpArr['mobile_no'] = $sheetData[$i][4];
                     $tmpArr['link_type'] = $sheetData[$i][5];
+                    $tmpArr['comment'] = $sheetData[$i][6];
                     $insertArr[] = $tmpArr;
                 } else {
                     break;
