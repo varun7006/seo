@@ -86,17 +86,17 @@
                                                             </div>
                                                         </div>
 
-<!--                                                        <div class="element-form">
-                                                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Which Project?</label></div>
-                                                            <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
-                                                                <div class="form-group">
-                                                                    <select class="form-control" data-placeholder="Choose Project" ng-model="source.project_id" multiple>
-                                                                        <option value="">Select</option>
-                                                                        <option ng-repeat="project in projectList track by $index" ng-selected="project.id == source.project_id" value="{{project.id}}">{{project.project_name| lowercase }}</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>-->
+                                                        <!--                                                        <div class="element-form">
+                                                                                                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Which Project?</label></div>
+                                                                                                                    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                                                                                        <div class="form-group">
+                                                                                                                            <select class="form-control" data-placeholder="Choose Project" ng-model="source.project_id" multiple>
+                                                                                                                                <option value="">Select</option>
+                                                                                                                                <option ng-repeat="project in projectList track by $index" ng-selected="project.id == source.project_id" value="{{project.id}}">{{project.project_name| lowercase }}</option>
+                                                                                                                            </select>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>-->
                                                         <div class="element-form">
                                                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Link Type</label></div>
                                                             <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
@@ -108,21 +108,21 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-<!--                                                        <div class="element-form">
-                                                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Status</label></div>
-                                                            <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
-                                                                <div class="form-group">
-                                                                    <select class="form-control" data-placeholder="Choose Country" ng-model="source.link_status">
-                                                                        <option value="">Select</option>
-                                                                        <option value="open">open</option>
-                                                                        <option value="processing">processing</option>
-                                                                        <option value="completed">completed</option>
-                                                                        <option value="rejected">rejected</option>
-
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>-->
+                                                        <!--                                                        <div class="element-form">
+                                                                                                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Status</label></div>
+                                                                                                                    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                                                                                        <div class="form-group">
+                                                                                                                            <select class="form-control" data-placeholder="Choose Country" ng-model="source.link_status">
+                                                                                                                                <option value="">Select</option>
+                                                                                                                                <option value="open">open</option>
+                                                                                                                                <option value="processing">processing</option>
+                                                                                                                                <option value="completed">completed</option>
+                                                                                                                                <option value="rejected">rejected</option>
+                                                        
+                                                                                                                            </select>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>-->
 
                                                         <div class="element-form">
                                                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 text-xs-right"><label>Comment</label></div>
@@ -157,15 +157,15 @@
 </div>
 <div class="row">
     <section id="content-wrapper" class="form-elements">
-        <div class="row" ng-show="showAlert==true">
+        <div class="row" ng-show="showAlert == true">
             <div class="col-xs-2"></div>
             <div class="col-xs-8">
                 <div class="alert-dark-background">
-                    <div class="alert {{ alertClass }} alert-dismissible fade in" role="alert">
+                    <div class="alert {{ alertClass}} alert-dismissible fade in" role="alert">
                         <button type="button" class="close" ng-click="hideAlert()">
                             <span >×</span>
                         </button>
-                        <i class="fa {{ alertIcon }}"></i><strong></strong>{{ alertText }}
+                        <i class="fa {{ alertIcon}}"></i><strong></strong>{{ alertText}}
                     </div>
                 </div>
             </div>
@@ -235,14 +235,14 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr ng-repeat="sources in sourceList| orderBy:orderByField:reverseSort |  filter: searchfield track by $index">
-                                                            <td>{{ sources.sn }}</td>
-                                                            <td ng-click="editSource(sources, $index)">
+                                                            <td>{{ sources.sn}}</td>
+                                                            <td>
                                                                 <span ng-hide="sources.editMode"><a href="{{ sources.exact_link | lowercase }}" target="_blank" >{{ sources.source_link}}</a></span>
                                                                 <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.exact_link" placeholder="Source Link" required="" />
                                                             </td>
-                                                            <td ng-click="editSource(sources, $index)">
+                                                            <td>
                                                                 <span ng-hide="sources.editMode"><a href="mailto:{{ sources.email | lowercase }}">{{ sources.email}}</a></span>
-                                                                <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.email" placeholder="Email" required="" />
+                                                                <input  type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.email" placeholder="Email" required="" />
                                                             </td>
                                                             <td ng-click="editSource(sources, $index)">
                                                                 <span ng-hide="sources.editMode">{{ sources.name | lowercase }}</span>
@@ -263,30 +263,32 @@
                                                             </td>
                                                             <td ng-click="editSource(sources, $index)">
                                                                 <span ng-hide="sources.editMode">{{ sources.project_list | lowercase}}</span>
-                                                                <select ng-show="sources.editMode" class="form-control" data-placeholder="Choose Project" ng-model="sources.project_id" multiple>
-                                                                    <option value="">Select</option>
-                                                                    <option ng-repeat="project in projectList track by $index" ng-selected="project.id == sources.project_id" value="{{project.id}}">{{project.project_name| lowercase }}</option>
-                                                                </select>
-                                                            </td>
-                                                            <td ng-click="editSource(sources, $index)">
-                                                                <span ng-hide="sources.editMode">{{ sources.link_type | lowercase }}</span>
-                                                                <select ng-show="sources.editMode" class="form-control" data-placeholder="Choose Link Type" ng-model="sources.link_type">
-                                                                    <option value="">Select</option>
-                                                                    <option ng-repeat="links in linkTypes track by $index" ng-selected="links.id == sources.link_type" value="{{links.id}}">{{ links.name | lowercase }}</option>
-                                                                </select>
-                                                            </td>
-                                                            <td ng-click="editSource(sources, $index)">
-                                                                <span ng-hide="sources.editMode">{{ sources.comment}}</span>
-                                                                <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.comment" placeholder="Comment" required="" />
-                                                            </td>
+                                                                <ui-select ng-show="sources.editMode" multiple tagging tagging-label="false" ng-model="sources.project_id" theme="bootstrap" ng-disabled="disabled" style="width: 100px;" title="Project">
+                                                                    <ui-select-match style="width: 100px;" >{{$item.project_name}}</ui-select-match>
+                                                                    <ui-select-choices repeat="project in projectList | filter:$select.search">
+                                                                        {{project.project_name}}
+                                                                    </ui-select-choices>
+                                                                </ui-select>
+                                                    </td>
+                                                    <td ng-click="editSource(sources, $index)">
+                                                        <span ng-hide="sources.editMode">{{ sources.link_type | lowercase }}</span>
+                                                        <select ng-show="sources.editMode" class="form-control" data-placeholder="Choose Link Type" ng-model="sources.link_type">
+                                                            <option value="">Select</option>
+                                                            <option ng-repeat="links in linkTypes track by $index" ng-selected="links.id == sources.link_type" value="{{links.id}}">{{ links.name | lowercase }}</option>
+                                                        </select>
+                                                    </td>
+                                                    <td ng-click="editSource(sources, $index)">
+                                                        <span ng-hide="sources.editMode">{{ sources.comment}}</span>
+                                                        <input type="text" name="firstName" ng-show="sources.editMode" class="form-control" ng-model="sources.comment" placeholder="Comment" required="" />
+                                                    </td>
 
-                                                            <td>
-                                                                <button ng-hide="sources.editMode" class="btn btn-mini btn-primary" ng-click="editSource(sources, $index)" ><i class="fa fa-edit"></i></button>
-                                                                <button ng-hide="sources.editMode" class="btn btn-mini btn-danger" ng-click="deleteSource(sources.id, $index)" id="sa-warning"><i class="fa fa-close"></i></button>
-                                                                <button ng-show="sources.editMode" class="btn btn-xs btn-primary" ng-click="updateSourceDetails(sources)" >Update</button>
-                                                                <button ng-show="sources.editMode" class="btn btn-xs btn-danger" ng-click="cancelSource(sources)" id="sa-warning">Cancel</button>
-                                                            </td>
-                                                        </tr>
+                                                    <td>
+                                                        <button ng-hide="sources.editMode" class="btn btn-mini btn-primary" ng-click="editSource(sources, $index)" ><i class="fa fa-edit"></i></button>
+                                                        <button ng-hide="sources.editMode" class="btn btn-mini btn-danger" ng-click="deleteSource(sources.id, $index)" id="sa-warning"><i class="fa fa-close"></i></button>
+                                                        <button ng-show="sources.editMode" class="btn btn-xs btn-primary" ng-click="updateSourceDetails(sources)" >Update</button>
+                                                        <button ng-show="sources.editMode" class="btn btn-xs btn-danger" ng-click="cancelSource(sources)" id="sa-warning">Cancel</button>
+                                                    </td>
+                                                    </tr>
                                                     </tbody>
                                                     <tfoot class="" ng-show="pageArr.length > 1 && sourceList.length > 0">
                                                         <tr class="footable-paging"><td colspan="12" class="__web-inspector-hide-shortcut__">

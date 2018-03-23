@@ -116,7 +116,7 @@
                             <div class="dashboard-header">
                                 <h4 class="page-content-title float-xs-left">Total {{ projectCount}} Project</h4>
                                 <span style="float:right"><button type="button" class="btn btn-primary" ng-click="addNewProject()">Add New</button></span>
-                                <span style="float:right;margin-right: 2%;"><button class="btn btn-warning" onclick="exportData('myDataTable', 'project.xls')">Export to Excel</button></span>
+                                <span style="float:right;margin-right: 2%;"><a href="api/index.php/project/generateprojectexcel" target="_blank"><button class="btn btn-warning">Export to Excel</button></a></span>
                                 <!--<span style="float:right;margin-right: 2%;"><button type="button" class="btn btn-mini btn-success" data-toggle="modal" data-target="#defaultmodal">Upload Excel</button></span>-->
                             </div>
                             <div class="dashboard-box">

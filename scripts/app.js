@@ -7,7 +7,7 @@
     'use strict';
     angular
             .module('app', [
-                'ui.router','ui.load', 'ui.select', 'ngSanitize','textAngular','720kb.datepicker', 'ui.bootstrap',
+                'ui.router', 'ui.load', 'ui.select', 'ngSanitize', 'textAngular', '720kb.datepicker', 'ui.bootstrap',
             ])
             .directive('numbersOnly', function () {
                 return {
@@ -73,31 +73,31 @@
             }
         };
     })
-    .directive('onlyDigits', function () {
-        return {
-            require: 'ngModel',
-            restrict: 'A',
-            link: function (scope, element, attr, ctrl) {
-                function inputValue(val) {
-                    if (val) {
-                        var digits = val.replace(/[^0-9.]/g, '');
+            .directive('onlyDigits', function () {
+                return {
+                    require: 'ngModel',
+                    restrict: 'A',
+                    link: function (scope, element, attr, ctrl) {
+                        function inputValue(val) {
+                            if (val) {
+                                var digits = val.replace(/[^0-9.]/g, '');
 
-                        if (digits.split('.').length > 2) {
-                            digits = digits.substring(0, digits.length - 1);
-                        }
+                                if (digits.split('.').length > 2) {
+                                    digits = digits.substring(0, digits.length - 1);
+                                }
 
-                        if (digits !== val) {
-                            ctrl.$setViewValue(digits);
-                            ctrl.$render();
+                                if (digits !== val) {
+                                    ctrl.$setViewValue(digits);
+                                    ctrl.$render();
+                                }
+                                return parseFloat(digits);
+                            }
+                            return undefined;
                         }
-                        return parseFloat(digits);
+                        ctrl.$parsers.push(inputValue);
                     }
-                    return undefined;
-                }
-                ctrl.$parsers.push(inputValue);
-            }
-        };
-    })
+                };
+            })
             .directive('countTo', ['$timeout', function ($timeout) {
                     return {
                         replace: false,
@@ -158,12 +158,42 @@
                     }
 
                 }])
-            .config(
-                    ['$httpProvider',
-                        function ($httpProvider) {
-                            $httpProvider.interceptors.push('httpRequestInterceptor');
-                        }
-                    ]);
+//            .filter('propsFilter', function () {
+//                return function (items, props) {
+//                    var out = [];
+//
+//                    if (angular.isArray(items)) {
+//                        items.forEach(function (item) {
+//                            var itemMatches = false;
+//
+//                            var keys = Object.keys(props);
+//                            for (var i = 0; i < keys.length; i++) {
+//                                var prop = keys[i];
+//                                var text = props[prop].toLowerCase();
+//                                if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
+//                                    itemMatches = true;
+//                                    break;
+//                                }
+//                            }
+//
+//                            if (itemMatches) {
+//                                out.push(item);
+//                            }
+//                        });
+//                    } else {
+//                        // Let the output be the input untouched
+//                        out = items;
+//                    }
+//
+//                    return out;
+//                };
+//            })
+    .config(
+            ['$httpProvider',
+                function ($httpProvider) {
+                    $httpProvider.interceptors.push('httpRequestInterceptor');
+                }
+            ]);
 
 
 

@@ -23,8 +23,8 @@ class Project extends MY_Controller {
     }
 
     public function getProjectList() {
-        $userList = $this->modelObj->getProjectList();
-        echo json_encode($userList);
+        $projectList = $this->modelObj->getProjectList();
+        echo json_encode($projectList);
     }
 
     public function addNewProjectView() {
@@ -44,6 +44,29 @@ class Project extends MY_Controller {
         }
         $saveResult = $this->modelObj->saveNewProjectDetails($dataArr);
         echo json_encode($saveResult);
+    }
+    
+    public function generateProjectExcel() {
+        $projectList = $this->modelObj->getProjectList();
+        if ($projectList['status'] == 'SUCCESS' && $projectList['value']['count'] > 0) {
+            
+          $table = "<table><tr><th>#</th><th>Project Name</th><th>Client Name</th><th>Comment</th><th>Completed Links</th><th>Broken Links</th></tr>";
+          
+          foreach ($projectList['value']['list'] as $key => $value) {
+                $table .= "<tr><td>".($key+1)."</td>";
+                $table .= "<td>".$value['project_name']."</td>";
+                $table .= "<td>".$value['client_name']."</td>";
+                $table .= "<td>".$value['comment']."</td>";
+                $table .= "<td>".$value['completed_links']."</td>";
+                $table .= "<td>".$value['broken_links']."</td>";
+                $table .= "</tr>";
+            }
+            $table .= "</table>";
+            $excelResult = $this->coreObj->getReportDataTypeWiseExcel($table, "projectlist.xlsx");
+        }else{
+            echo "No Client Found";
+            exit;
+        }
     }
 
     public function updateProject() {

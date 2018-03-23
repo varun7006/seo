@@ -3,8 +3,10 @@
     angular
             .module('app')
             .controller('sourcesCtrl', sourcesCtrl);
-    sourcesCtrl.$inject = ['$scope', '$http', '$state', '$sce'];
-    function sourcesCtrl($scope, $http, $state, $sce) {
+    sourcesCtrl.$inject = ['$scope', '$http', '$state', '$sce', '$timeout'];
+    function sourcesCtrl($scope, $http, $state, $sce, $timeout) {
+
+
         $scope.tags = [];
         $scope.linkTypes = [];
         $scope.linkTypesCount = 0;
@@ -110,7 +112,7 @@
             $scope.pageArr = [];
             $scope.from_limit = fromlimit;
             $scope.to_limit = fromlimit + $scope.limitdifference;
-            
+
             $scope.getSourceList();
 
         }
@@ -198,8 +200,16 @@
 
         $scope.editSource = function (sourceObj, index) {
             sourceObj.editMode = true;
-
-//            $scope.showNewSource = true;
+            var projectArr = sourceObj.project_id
+//            $scope.multipleDemo.colors2 = ['Blue','Red'];
+//            $scope.sourceList[index].project_id = [];
+//            angular.forEach(projectArr, function (value, key) {
+//                angular.forEach($scope.projectList, function (val, k) {
+//                    if (val.id == value) {
+//                        $scope.sourceList[index].project_id.push(val)
+//                    }
+//                });
+//            });
             $scope.saveType = "UPDATE";
             $scope.updateId = sourceObj.id;
             $scope.index = index;
@@ -210,7 +220,7 @@
             $scope.isAjax = true;
             $scope.source.name = sourceObj.name;
             $scope.source.email = sourceObj.email;
-            $scope.source.source_link = sourceObj.source_link;
+            $scope.source.source_link = sourceObj.exact_link;
             $scope.source.topics = sourceObj.topics;
             $scope.source.mobile_no = sourceObj.mobile_no;
             $scope.source.link_text = sourceObj.link_text;
@@ -218,7 +228,10 @@
             $scope.source.link_target = sourceObj.link_target;
             $scope.source.link_status = sourceObj.link_status;
             $scope.source.comment = sourceObj.comment;
-            $scope.source.project_id = sourceObj.project_id;
+            angular.forEach(sourceObj.project_id, function (value, key) {
+                $scope.source.project_id.push(value.id)
+            });
+
 
             $http({
                 method: 'POST',
@@ -314,6 +327,45 @@
         }
 
         $scope.projectList();
+
+
+        // Multiple Tagging 
+
+        $scope.disabled = undefined;
+        $scope.searchEnabled = undefined;
+
+        $scope.enable = function () {
+            $scope.disabled = false;
+        };
+
+        $scope.disable = function () {
+            $scope.disabled = true;
+        };
+
+        $scope.enableSearch = function () {
+            $scope.searchEnabled = true;
+        }
+
+        $scope.disableSearch = function () {
+            $scope.searchEnabled = false;
+        }
+
+        $scope.clear = function () {
+            $scope.person.selected = undefined;
+            $scope.address.selected = undefined;
+            $scope.country.selected = undefined;
+        };
+
+        $scope.counter = 0;
+
+//        $scope.availableColors = ['Red', 'Green', 'Blue', 'Yellow', 'Magenta', 'Maroon', 'Umbra', 'Turquoise'];
+
+
+        $scope.multipleDemo = {};
+        $scope.multipleDemo.project = [];
+
+        // Tagging Code Ends
+
 
         $scope.getLinkTypesList = function () {
             $http({

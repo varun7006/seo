@@ -39,6 +39,32 @@ class Report extends MY_Controller {
         }
         echo json_encode($backLinkList);
     }
+    
+    public function generateLinkStatusExcel($project_id) {
+        $backLinkList = $this->modelObj->getLinkStatusReport($project_id);
+        if ($backLinkList['status'] == 'SUCCESS' && $backLinkList['value']['count'] > 0) {
+          $table = "<table><tr><th>#</th><th>Date</th><th>Link Status</th><th>BackLink</th><th>Anchor</th><th>Target Page</th><th>Name</th><th>Email</th><th>Note</th></tr>";
+          
+          foreach ($backLinkList['value']['list'] as $key => $value) {
+                $table .= "<tr><td>".($key+1)."</td>";
+                $table .= "<td>".$value['date']."</td>";
+                $table .= "<td>".$value['link_status']."</td>";
+                $table .= "<td>".$value['backlink']."</td>";
+                $table .= "<td>".$value['anchor']."</td>";
+                $table .= "<td>".$value['target_page']."</td>";
+                $table .= "<td>".$value['name']."</td>";
+                $table .= "<td>".$value['email']."</td>";
+                $table .= "<td>".$value['remarks']."</td>";
+                $table .= "</tr>";
+            }
+            $table .= "</table>";
+            $fileName = isset($backLinkList['value']['project_name']) ? "Project-".$backLinkList['value']['project_name']."_linkstatusreport.xlsx" : "link_status_report.xlsx";
+            $excelResult = $this->coreObj->getReportDataTypeWiseExcel($table, $fileName);
+        }else{
+            echo "No Client Found";
+            exit;
+        }
+    }
 
     public function url_test($url) {
         $timeout = 30;

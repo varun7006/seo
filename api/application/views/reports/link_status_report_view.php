@@ -149,7 +149,7 @@
                             <div class="dashboard-header">
                                 <h4 class="page-content-title float-xs-left">Link Status Report For Project {{ mainProject}}</h4>
                                 <span style="float:right"><button type="button" class="btn btn-primary" ng-click="addNewSource()">Add New</button></span>
-                                <span style="float:right;margin-right: 2%;"><button class="btn btn-warning" onclick="exportData('myDataTable', 'sources.xls')">Export to Excel</button></span>
+                                <span style="float:right;margin-right: 2%;"><a href="api/index.php/reports/getlinkstatusexcel/{{ project_id }}" target="_blank"><button class="btn btn-warning">Export to Excel</button></a></span>
                             </div>
                             <div class="dashboard-box">
                                 <div class="row">

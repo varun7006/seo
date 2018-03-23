@@ -7,3 +7,4 @@ $route['project/savenewproject'] = 'project/Project/saveNewProject';
 $route['project/updateproject'] = 'project/Project/updateProject';
 $route['project/deleteproject'] = 'project/Project/deleteProject';
 $route['project/addnewproject'] = 'project/Project/addNewProjectView';
+$route['project/generateprojectexcel'] = 'project/Project/generateProjectExcel';

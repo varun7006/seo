@@ -58,8 +58,10 @@ class Source extends MY_Controller {
                     $projectStr = "";
                     $projectStr = $this->modelObj->getSourceProjectList($projectArr);
                     $sourceList['value']['list'][$key]['project_list'] = $projectStr;
+                    $sourceList['value']['list'][$key]['project_id'] = $projectArr;
                 } else {
                     $sourceList['value']['list'][$key]['project_list'] = "";
+                    $sourceList['value']['list'][$key]['project_id'] = [];
                 }
                 $sourceList['value']['list'][$key]['source_link'] = $this->getDomainName($value['source_link']);
             }
@@ -317,7 +319,7 @@ class Source extends MY_Controller {
         $this->rateLimit = 10;
 
 
-        $urlMetricData = $this->getUrlMetricData();
+        $urlMetricData = $this->getUrlMetricData($sourceLink);
 
 //        $anchorTextData = $this->getAnchorData();
         // Moz Api Code Ends Here
@@ -348,7 +350,7 @@ class Source extends MY_Controller {
         $authenticator->setRateLimit($rateLimit);
 
         // URL to query
-        $objectURL = "http://www.hestabit.com";
+        $objectURL = $sourceLink;
 
         // Metrics to retrieve (url_metrics_constants.php)
         $cols = URLMETRICS_COL_DEFAULT;
@@ -399,7 +401,7 @@ class Source extends MY_Controller {
             $excelResult = $this->coreObj->excelUpload();
             $objPHPExcel = PHPExcel_IOFactory::load($excelResult['value']);
             $sheetData = $objPHPExcel->getActiveSheet(0)->rangeToArray('A1:H10000');
-            $headercolArr = array("SOURCE", "NAME", "EMAIL", "TOPICS", "MOBILE NO.", "LINK TYPE","COMMENT");
+            $headercolArr = array("SOURCE", "NAME", "EMAIL", "TOPICS", "MOBILE NO.", "LINK TYPE", "COMMENT");
 
             foreach ($headercolArr as $key => $value) {
                 if ($sheetData[0][$key] != $value) {

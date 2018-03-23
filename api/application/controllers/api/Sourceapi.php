@@ -34,9 +34,6 @@ class SourceApi extends CI_Controller {
 
     public function checkSourceSeoReport() {
         $sourceList = $this->reportObj->getSourceList();
-//        echo "<pre>";
-//        print_r($sourceList);
-//        exit;
         $insertArr = array();
         $sourceIdArr = array();
         if ($sourceList['status'] == 'SUCCESS' && $sourceList['value']['count'] > 0) {
@@ -127,8 +124,37 @@ class SourceApi extends CI_Controller {
             $this->db->insert_batch("broken_links_details", $insertArr);
         }
     }
+    
+    public function getDomainName($url) {
 
-    public function url_test($url) {
+// in case scheme relative URI is passed, e.g., //www.google.com/
+        $url = trim($url, '/');
+
+// If scheme not included, prepend it
+        if (!preg_match('#^http(s)?://#', $url)) {
+            $url = 'http://' . $url;
+        }
+
+        $urlParts = parse_url($url);
+        echo '<pre>';
+        print_r($urlParts);
+        exit;
+// remove www
+        $domain = preg_replace('/^www\./', '', $urlParts['host']);
+        return $domain;
+    }
+
+
+    public function check_back_link($mainUrl, $backLinkUrl) {
+        $a = file_get_contents("http://" . trim($mainUrl));
+        if (strpos($a, $backLinkUrl)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    function url_test($url) {
         $timeout = 30;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
