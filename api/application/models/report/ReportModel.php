@@ -26,6 +26,21 @@ class ReportModel extends CI_Model {
             return array("status" => "ERR", "value" => array(), "message" => "No Link Found");
         }
     }
+    
+    public function getsourceLiveStatus() {
+        $query = "SELECT a.backlink_id,a.type FROM `broken_links_details` as `a` WHERE `a`.`last_checked_date` = '".date("Y-m-d")."'";
+        $result = $this->db->query($query)->result_array();
+        if(count($result) > 0){
+            $returnArr = array();
+            foreach ($result as $key => $value) {
+                $returnArr[$value['backlink_id']] = $value['type'];
+            }
+            return $returnArr;
+        }else{
+            return [];
+        }
+    }
+    
     public function getLinkStatusReport($project_id) {
         $this->db->select("a.*,b.project_name,c.name as link_type_name");
         $this->db->from("link_status_report as a");

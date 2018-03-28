@@ -28,13 +28,9 @@ class Report extends MY_Controller {
         $project_id = $this->input->post('project_id');
         $backLinkList = $this->modelObj->getLinkStatusReport($project_id);
         if ($backLinkList['status'] == 'SUCCESS' && $backLinkList['value']['count'] > 0) {
+            $sourceLiveStatusResult = $this->modelObj->getsourceLiveStatus();
             foreach ($backLinkList['value']['list'] as $key => $value) {
-                $checkStatus = $this->url_test($value['backlink']);
-                if (!$checkStatus) {
-                    $backLinkList['value']['list'][$key]['live_status'] = "OFFLINE";
-                } else {
-                    $backLinkList['value']['list'][$key]['live_status'] = "ONLINE";
-                }
+                    $backLinkList['value']['list'][$key]['live_status'] = isset($sourceLiveStatusResult[$value['id']]) ? $sourceLiveStatusResult[$value['id']] : 'ONLINE';
             }
         }
         echo json_encode($backLinkList);
@@ -43,23 +39,53 @@ class Report extends MY_Controller {
     public function generateLinkStatusExcel($project_id) {
         $backLinkList = $this->modelObj->getLinkStatusReport($project_id);
         if ($backLinkList['status'] == 'SUCCESS' && $backLinkList['value']['count'] > 0) {
-          $table = "<table><tr><th>#</th><th>Date</th><th>Link Status</th><th>BackLink</th><th>Anchor</th><th>Target Page</th><th>Name</th><th>Email</th><th>Note</th></tr>";
-          
-          foreach ($backLinkList['value']['list'] as $key => $value) {
-                $table .= "<tr><td>".($key+1)."</td>";
-                $table .= "<td>".$value['date']."</td>";
-                $table .= "<td>".$value['link_status']."</td>";
-                $table .= "<td>".$value['backlink']."</td>";
-                $table .= "<td>".$value['anchor']."</td>";
-                $table .= "<td>".$value['target_page']."</td>";
-                $table .= "<td>".$value['name']."</td>";
-                $table .= "<td>".$value['email']."</td>";
-                $table .= "<td>".$value['remarks']."</td>";
-                $table .= "</tr>";
-            }
-            $table .= "</table>";
             $fileName = isset($backLinkList['value']['project_name']) ? "Project-".$backLinkList['value']['project_name']."_linkstatusreport.xlsx" : "link_status_report.xlsx";
-            $excelResult = $this->coreObj->getReportDataTypeWiseExcel($table, $fileName);
+            
+            $objPHPExcel = new PHPExcel();
+
+            $objWorkSheet = $objPHPExcel->createSheet(0);
+            $row = 1;
+            $col = 0;
+            $headingArr = array("S.No","Date","Link Status","BackLink","Anchor","Target Page","Name","Email","Note");
+            foreach ($headingArr as $key => $value) {
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value);
+                $col++;
+            }
+            $row++;
+            foreach ($backLinkList['value']['list'] as $key => $value) {
+                $col = 0;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, ($key + 1));
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['date']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['link_status']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['backlink']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['anchor']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['target_page']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['name']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['email']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['remarks']);
+                $col++;
+                $row++;
+            }
+
+
+            $objPHPExcel->setActiveSheetIndex(0);
+            $fileName = 'projectlist.xlsx';
+            if (ob_get_contents())
+                ob_end_clean();
+            header('Content-type: application/vnd.ms-excel');
+            header("Content-Disposition: attachment;filename=$fileName");
+            header("Cache-Control: max-age=0");
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+            $objWriter->save('php://output');
+            exit;
         }else{
             echo "No Client Found";
             exit;
@@ -116,9 +142,9 @@ class Report extends MY_Controller {
         $updateId = $this->input->post("id");
         unset($dataArr['repassword']);
         if ($updateId != null && $updateId != '') {
-            $prevData = $this->modelObj->getDataBeforeUpdate($updateId);
-            if (isset($dataArr['link_status']) && isset($prevData['link_status']) && $dataArr['link_status'] == 'COMPLETED' && $prevData['link_status'] != 'COMPLETED') {
-                $dataArr['completed_date'] = date("Y-m-d");
+            $dataArr['date'] = isset($dataArr['date']) ? date("Y-m-d",strtotime($dataArr['date'])) : date("Y-m-d");
+            if (isset($dataArr['link_status']) && $dataArr['link_status'] == 'COMPLETED') {
+                $dataArr['completed_date'] = isset($dataArr['completed_date']) ? date("Y-m-d",strtotime($dataArr['completed_date'])) : date("Y-m-d");
             }
             $updateResult = $this->modelObj->updateLinkReport($dataArr, $updateId);
             echo json_encode($updateResult);

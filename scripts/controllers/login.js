@@ -3,8 +3,8 @@
     angular
             .module('app')
             .controller('loginCtrl', loginCtrl);
-    loginCtrl.$inject = ['$scope', '$http', '$state'];
-    function loginCtrl($scope, $http, $state) {
+    loginCtrl.$inject = ['$scope', '$http', '$state','$localStorage'];
+    function loginCtrl($scope, $http, $state,$localStorage) {
         $scope.email = "";
         $scope.password = "";
 
@@ -20,6 +20,8 @@
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).then(function (jsondata) {
                     if (jsondata.data.status == 'SUCCESS') {
+                        localStorage.loginName = jsondata.data.value.name;
+                        localStorage.loginEmail = jsondata.data.value.email;
                         if (jsondata.data.value.user_type == 'ADMIN') {
                             $state.go('dashboard');
                         } else {

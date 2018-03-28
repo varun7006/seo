@@ -14,10 +14,26 @@ class SourceApi extends CI_Controller {
 
     public function checkSourceStatus() {
         $sourceList = $this->reportObj->getSourceList();
-
+        $checkedSourcesResult = $this->getCheckedSourceList();
+        $checkedSourcesIdArr = array();
+        if (count($checkedSourcesResult) > 0) {
+            foreach ($checkedSourcesResult as $key => $value) {
+                $checkedSourcesIdArr[] = $value['source_id'];
+            }
+        }
         $insertArr = array();
         if ($sourceList['status'] == 'SUCCESS' && $sourceList['value']['count'] > 0) {
+            $currentList = array();
             foreach ($sourceList['value']['list'] as $key => $value) {
+                if (count($currentList) > 9){
+                    break;
+                }
+                if (!in_array($value['id'], $checkedSourcesIdArr)) {
+                    $currentList[] = $value;
+                    $checkedSourcesIdArr[] = $value['id'];
+                }
+            }
+            foreach ($currentList as $key => $value) {
                 $checkStatus = $this->url_test($value['source_link']);
                 if (!$checkStatus) {
                     $insertArr[] = array("source_id" => $value['id'], "last_checked_date" => date("Y-m-d"), "type" => "OFFLINE");
@@ -27,36 +43,84 @@ class SourceApi extends CI_Controller {
             }
         }
         if (count($insertArr) > 0) {
+            $this->db->where_not_in('source_id', $checkedSourcesIdArr);
             $this->db->delete("broken_source_details", array("last_checked_date" => date("Y-m-d")));
-            $this->db->insert_batch("broken_source_details", $insertArr);
+            $result = $this->db->insert_batch("broken_source_details", $insertArr);
+            if ($result > 0) {
+                echo json_encode(array("status" => "SUCCESS", "value" => $result, "msg" => "Source Link Status Saved Successfully"));
+            } else {
+                echo json_encode(array("status" => "ERR", "value" => "-1", "msg" => "Source Link Status Not Saved."));
+            }
         }
     }
 
+    public function getCheckedSourceList() {
+        $result = $this->db->query("SELECT `a`.* FROM `broken_source_details` as `a` WHERE  `a`.`last_checked_date` = '" . date("Y-m-d") . "'")->result_array();
+        if (count($result) > 0) {
+            return $result;
+        } else {
+            return [];
+        }
+    }
+    
+
     public function checkSourceSeoReport() {
         $sourceList = $this->reportObj->getSourceList();
+        $checkedSourcesResult = $this->getCheckedSourceSeoReport();
+        
+        $checkedSourcesIdArr = array();
+        if (count($checkedSourcesResult) > 0) {
+            foreach ($checkedSourcesResult as $key => $value) {
+                $checkedSourcesIdArr[] = $value['source_id'];
+            }
+        }
         $insertArr = array();
-        $sourceIdArr = array();
         if ($sourceList['status'] == 'SUCCESS' && $sourceList['value']['count'] > 0) {
+            $currentList = array();
             foreach ($sourceList['value']['list'] as $key => $value) {
-                $sourceIdArr[] = $value['id'];
-                $insertArr[] = $this->getMozAPiData($value['source_link'], $value);
+                if (count($currentList) > 10){
+                    break;
+                }
+                if (!in_array($value['id'], $checkedSourcesIdArr)) {
+                    $currentList[] = $value;
+                }
+            }
+            
+            if (count($currentList) > 0) {
+                foreach ($currentList as $key => $value) {
+                    $insertArr[] = $this->getMozAPiData($value['source_link'], $value);
+                }
             }
         }
         if (count($insertArr) > 0) {
-            $this->db->where_in('source_id', $sourceIdArr);
+            $this->db->where_not_in('source_id', $checkedSourcesIdArr);
             $updateResult = $this->db->update('seo_data', array('status' => 'FALSE'));
-
             $result = $this->db->insert_batch("seo_data", $insertArr);
+            if ($result > 0) {
+                echo json_encode(array("status" => "SUCCESS", "value" => $result, "msg" => "Source Link Status Saved Successfully"));
+            } else {
+                echo json_encode(array("status" => "ERR", "value" => "-1", "msg" => "Source Link Status Not Saved."));
+            }
+        }else {
+                echo json_encode(array("status" => "ERR", "value" => "-1", "msg" => "Nothing to save."));
+            }
+    }
+
+    public function getCheckedSourceSeoReport() {
+        $result = $this->db->query("SELECT `a`.* FROM `seo_data` as `a` WHERE  DATE_FORMAT(`a`.`date`,'%Y-%m') = '" . date("Y-m") . "' AND `a`.`status` = 'TRUE' ")->result_array();
+        if (count($result) > 0) {
+            return $result;
+        } else {
+            return [];
         }
     }
 
     public function getMozAPiData($sourceLink, $dataArr) {
+        
         // Moz Api Code Starts Here
-        $this->AccessID = 'mozscape-c3c9b9264';
-//        $this->AccessID = 'mozscape-52aa25c665';
+        $this->AccessID = 'mozscape-52aa25c665';
         // Add your secretKey here
-        $this->SecretKey = '57fd4ff492e9d3f6549382ce2879632c';
-//        $this->SecretKey = '8fd4c8750b0125468bcd3da130cae7e9';
+        $this->SecretKey = '8fd4c8750b0125468bcd3da130cae7e9';
         // Set the rate limit
         $this->rateLimit = 10;
 
@@ -109,8 +173,27 @@ class SourceApi extends CI_Controller {
     public function checkBackLinkStatus() {
         $sourceList = $this->reportObj->getBackLinkList();
         $insertArr = array();
+        $checkedSourcesResult = $this->getCheckedBackLinkList();
+        $checkedSourcesIdArr = array();
+        if (count($checkedSourcesResult) > 0) {
+            foreach ($checkedSourcesResult as $key => $value) {
+                $checkedSourcesIdArr[] = $value['backlink_id'];
+            }
+        }
+        
         if ($sourceList['status'] == 'SUCCESS' && $sourceList['value']['count'] > 0) {
+            $currentList = array();
             foreach ($sourceList['value']['list'] as $key => $value) {
+                if (count($currentList) > 9){
+                    break;
+                }
+                if (!in_array($value['id'], $checkedSourcesIdArr)) {
+                    $currentList[] = $value;
+                    $checkedSourcesIdArr[] = $value['id'];
+                }
+            }
+            
+            foreach ($currentList as $key => $value) {
                 $checkStatus = $this->url_test($value['backlink']);
                 if (!$checkStatus) {
                     $insertArr[] = array("project_id" => $value['project_id'], "backlink_id" => $value['id'], "last_checked_date" => date("Y-m-d"), "type" => "OFFLINE");
@@ -120,11 +203,28 @@ class SourceApi extends CI_Controller {
             }
         }
         if (count($insertArr) > 0) {
+            $this->db->where_not_in('backlink_id', $checkedSourcesIdArr);
             $this->db->delete("broken_links_details", array("last_checked_date" => date("Y-m-d")));
-            $this->db->insert_batch("broken_links_details", $insertArr);
+            $result = $this->db->insert_batch("broken_links_details", $insertArr);
+            if ($result > 0) {
+                echo json_encode(array("status" => "SUCCESS", "value" => $result, "msg" => "Back Link Status Saved Successfully"));
+            } else {
+                echo json_encode(array("status" => "ERR", "value" => "-1", "msg" => "Back Link Status Not Saved."));
+            }
+        }  else {
+            echo json_encode(array("status" => "ERR", "value" => "-1", "msg" => "Nothing to Saved."));
         }
     }
     
+    public function getCheckedBackLinkList() {
+        $result = $this->db->query("SELECT `a`.* FROM `broken_links_details` as `a` WHERE  `a`.`last_checked_date` = '" . date("Y-m-d") . "'")->result_array();
+        if (count($result) > 0) {
+            return $result;
+        } else {
+            return [];
+        }
+    }
+
     public function getDomainName($url) {
 
 // in case scheme relative URI is passed, e.g., //www.google.com/
@@ -136,14 +236,10 @@ class SourceApi extends CI_Controller {
         }
 
         $urlParts = parse_url($url);
-        echo '<pre>';
-        print_r($urlParts);
-        exit;
 // remove www
         $domain = preg_replace('/^www\./', '', $urlParts['host']);
         return $domain;
     }
-
 
     public function check_back_link($mainUrl, $backLinkUrl) {
         $a = file_get_contents("http://" . trim($mainUrl));
@@ -155,18 +251,44 @@ class SourceApi extends CI_Controller {
     }
 
     function url_test($url) {
-        $timeout = 30;
+        $domainUrl = $this->getDomainName($url);
+        $firstUrl = "http://www." . $domainUrl;
+        $secondUrl = "https://www." . $domainUrl;
+        $thirdUrl = "http://" . $domainUrl;
+        $fourthUrl = "https://" . $domainUrl;
+        $timeout = 10;
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_URL, $firstUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
         $http_respond = curl_exec($ch);
         $http_respond = trim(strip_tags($http_respond));
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if (( $http_code == "200" ) || ( $http_code == "302" )) {
+
+        curl_setopt($ch, CURLOPT_URL, $secondUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+        $http_respond = curl_exec($ch);
+        $http_respond = trim(strip_tags($http_respond));
+        $http_code1 = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_setopt($ch, CURLOPT_URL, $thirdUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+        $http_respond = curl_exec($ch);
+        $http_respond = trim(strip_tags($http_respond));
+        $http_code2 = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_setopt($ch, CURLOPT_URL, $fourthUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+        $http_respond = curl_exec($ch);
+        $http_respond = trim(strip_tags($http_respond));
+        $http_code3 = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if (( $http_code == "200" ) || ( $http_code == "302" ) || ( $http_code1 == "200" ) || ( $http_code1 == "302" ) || ( $http_code2 == "200" ) || ( $http_code2 == "302" ) || ( $http_code3 == "200" ) || ( $http_code3 == "302" )) {
             return true;
         } else {
-            // return $http_code;, possible too
             return false;
         }
         curl_close($ch);

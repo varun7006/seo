@@ -2,6 +2,22 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/var/www/html/seo/api/application/views/sources/sources_view.php</file>
+            <file>file:/var/www/html/seo/scripts/controllers/link_status_report.js</file>
+            <file>file:/var/www/html/seo/api/application/controllers/api/Sourceapi.php</file>
+            <file>file:/var/www/html/seo/api/application/models/sources/SourceModel.php</file>
+            <file>file:/var/www/html/seo/api/application/views/reports/link_status_report_view.php</file>
+            <file>file:/var/www/html/seo/api/application/models/report/ReportModel.php</file>
+            <file>file:/var/www/html/seo/api/application/views/dashboard/dashboard_view.php</file>
+            <file>file:/var/www/html/seo/scripts/controllers/sources.js</file>
+            <file>file:/var/www/html/seo/api/application/views/settings/view_link_types.php</file>
+            <file>file:/var/www/html/seo/api/application/views/navigation/navigation.php</file>
+            <file>file:/var/www/html/seo/api/application/controllers/sources/Source.php</file>
+            <file>file:/var/www/html/seo/api/application/controllers/report/Report.php</file>
+            <file>file:/var/www/html/seo/api/application/views/user/user_view.php</file>
+            <file>file:/var/www/html/seo/api/application/views/settings/topics_view.php</file>
+            <file>file:/var/www/html/seo/api/application/views/project/project_view.php</file>
+        </group>
     </open-files>
 </project-private>

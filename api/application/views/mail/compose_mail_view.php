@@ -57,7 +57,7 @@
                             </div>
                             <div class="col-xs-12">
                                 <div class="form-group file-control-upload">
-                                    <input ng-model="excelFile" style="height:35px;width:230px;padding:0px;" type="file" class="form-control  btn btn-success fileinput-button"  onchange="angular.element(this).scope().uploadedFile(this)">
+                                    <input ng-model="excelFile" style="height:35px;width:400px;padding:0px;" type="file" class="form-control  btn btn-success fileinput-button"  onchange="angular.element(this).scope().uploadedFile(this)">
                                 </div>
                             </div>
 
@@ -76,11 +76,5 @@
         <div class="clearfix"></div>
 
     </div>
-</section><?php
-
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+</section>
 

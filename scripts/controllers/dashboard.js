@@ -16,6 +16,8 @@
         $scope.brokenLinkCount = 0;
         $scope.projectList = [];
         $scope.projectCount = 0;
+        $scope.linkTypes = [];
+        $scope.linkTypesCount = 0;
 
         $scope.getUserList = function () {
             $http({
@@ -64,8 +66,31 @@
         }
 
         $scope.getBucketList();
+        $scope.linkTypeArr = [];
+        $scope.getLinkTypesList = function () {
+            $http({
+                method: 'POST',
+                url: baseURL + '/settings/getlinktypeslist',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(function (jsondata) {
+                if (jsondata.data.status == 'SUCCESS') {
+                    $scope.linkTypes = jsondata.data.value.list;
+                    $scope.linkTypesCount = jsondata.data.value.count;
+                } else {
+                    $scope.sourceReport = [];
+                }
+                alert(angular.toJson($scope.linkTypeArr))
+            }).finally(function(){
+                $scope.getProjectList();
+            });
+           
+        }
+
+        $scope.getLinkTypesList();
+        
 
         $scope.getProjectList = function () {
+            
             $http({
                 method: 'GET',
                 url: baseURL + '/project/getprojectlist',
@@ -74,6 +99,7 @@
                 if (jsondata.data.status == 'SUCCESS') {
                     $scope.projectList = jsondata.data.value.list;
                     $scope.projectCount = jsondata.data.value.count;
+
                 }
             });
         }

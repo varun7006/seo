@@ -7,8 +7,10 @@
 
             .controller('headerCtrl', headerCtrl);
 
-    headerCtrl.$inject = ['$scope', '$http', '$rootScope', '$state'];
-    function headerCtrl($scope, $http, $rootScope, $state) {
+    headerCtrl.$inject = ['$scope', '$http', '$rootScope', '$state','$localStorage'];
+    function headerCtrl($scope, $http, $rootScope, $state,$localStorage) {
+        $scope.loginName = localStorage.loginName;
+        $scope.loginEmail = localStorage.loginEmail;
         $scope.logout = function () {
             $http({
                 method: 'POST',

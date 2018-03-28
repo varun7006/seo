@@ -35,21 +35,47 @@ class User extends MY_Controller {
         $userList = $this->modelObj->getUserList();
         
         if ($userList['status'] == 'SUCCESS' && $userList['value']['count'] > 0) {
-            
-          $table = "<table><tr><th>#</th><th>Name</th><th>Email</th><th>Website</th><th>Phone No</th><th>Address</th><th>Comment</th></tr>";
-          
-          foreach ($userList['value']['list'] as $key => $value) {
-                $table .= "<tr><td>".($key+1)."</td>";
-                $table .= "<td>".$value['name']."</td>";
-                $table .= "<td>".$value['email']."</td>";
-                $table .= "<td>".$value['website']."</td>";
-                $table .= "<td>".$value['mobile_no']."</td>";
-                $table .= "<td>".$value['address']."</td>";
-                $table .= "<td>".$value['comment']."</td>";
-                $table .= "</tr>";
+          $objPHPExcel = new PHPExcel();
+
+            $objWorkSheet = $objPHPExcel->createSheet(0);
+            $row = 1;
+            $col = 0;
+            $headingArr = array("S.No","Name","Email","Website","Phone No","Adddress","Comment");
+            foreach ($headingArr as $key => $value) {
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value);
+                $col++;
             }
-            $table .= "</table>";
-            $excelResult = $this->coreObj->getReportDataTypeWiseExcel($table, "exported_clients.xlsx");
+            $row++;
+            foreach ($userList['value']['list'] as $key => $value) {
+                $col = 0;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, ($key + 1));
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['name']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['email']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['website']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['mobile_no']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['address']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['comment']);
+                $col++;
+                $row++;
+            }
+
+
+            $objPHPExcel->setActiveSheetIndex(0);
+            $fileName = 'exported_clients.xlsx';
+            if (ob_get_contents())
+                ob_end_clean();
+            header('Content-type: application/vnd.ms-excel');
+            header("Content-Disposition: attachment;filename=$fileName");
+            header("Cache-Control: max-age=0");
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+            $objWriter->save('php://output');
+            exit;  
         }else{
             echo "No Client Found";
             exit;

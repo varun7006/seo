@@ -12,7 +12,10 @@
         $scope.topicsList = [];
         $scope.topicsCount = 0;
         $scope.link = {'name': $scope.project_id};
-
+        $scope.showAlert = false;
+        $scope.alertText = "";
+        $scope.alertIcon = "";
+        $scope.alertClass = "";
 
         $scope.getLinkTypesList = function () {
             $http({
@@ -33,6 +36,13 @@
         }
 
         $scope.getLinkTypesList();
+
+        $scope.hideAlert = function () {
+            $scope.showAlert = false;
+            $scope.alertText = "";
+            $scope.alertIcon = "";
+            $scope.alertClass = "";
+        }
 
         $scope.getTopicsList = function () {
             $http({
@@ -75,13 +85,19 @@
                 data: 'data=' + encodeURIComponent(angular.toJson($scope.link)),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function (jsondata) {
-                alert(jsondata.data.msg)
                 if (jsondata.data.status == 'SUCCESS') {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-check";
+                    $scope.alertClass = "alert-success";
                     $scope.link = {};
                     $scope.showNew = false;
                     $scope.getLinkTypesList();
                 } else {
-
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-times-circle";
+                    $scope.alertClass = "alert-danger";
                 }
             });
 //            
@@ -98,12 +114,18 @@
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function (jsondata) {
                 $scope.isAjax = true;
-                alert(jsondata.data.msg)
                 if (jsondata.data.status == 'SUCCESS') {
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-check";
+                    $scope.alertClass = "alert-success";
                     $scope.link = {};
                     $scope.getLinkTypesList();
                 } else {
-
+                    $scope.showAlert = true;
+                    $scope.alertText = jsondata.data.msg;
+                    $scope.alertIcon = "fa-times-circle";
+                    $scope.alertClass = "alert-danger";
                 }
             });
         }
@@ -126,10 +148,18 @@
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).then(function (jsondata) {
                     $scope.isAjax = false;
-                    alert(jsondata.data.msg)
                     if (jsondata.data.status == 'SUCCESS') {
+                        $scope.showAlert = true;
+                        $scope.alertText = jsondata.data.msg;
+                        $scope.alertIcon = "fa-check";
+                        $scope.alertClass = "alert-success";
                         $scope.linkTypes.splice(index, 1);
                         $scope.linkTypesCount = $scope.linkTypesCount - 1;
+                    } else {
+                        $scope.showAlert = true;
+                        $scope.alertText = jsondata.data.msg;
+                        $scope.alertIcon = "fa-times-circle";
+                        $scope.alertClass = "alert-danger";
                     }
                 });
             }
@@ -147,10 +177,18 @@
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).then(function (jsondata) {
                     $scope.isAjax = false;
-                    alert(jsondata.data.msg)
                     if (jsondata.data.status == 'SUCCESS') {
+                        $scope.showAlert = true;
+                        $scope.alertText = jsondata.data.msg;
+                        $scope.alertIcon = "fa-check";
+                        $scope.alertClass = "alert-success";
                         $scope.topicsList.splice(index, 1);
                         $scope.topicsCount = $scope.topicsCount - 1;
+                    } else {
+                        $scope.showAlert = true;
+                        $scope.alertText = jsondata.data.msg;
+                        $scope.alertIcon = "fa-times-circle";
+                        $scope.alertClass = "alert-danger";
                     }
                 });
             }

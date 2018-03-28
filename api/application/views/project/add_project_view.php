@@ -6,9 +6,9 @@
                 <ol class="breadcrumb float-xs-right">
                     <li class="breadcrumb-item">
                         <span class="fs1" aria-hidden="true" data-icon=""></span>
-                        <a href="#">Home</a>
+                        <a ui-sref="dashboard">Home</a>
                     </li>
-                    <li class="breadcrumb-item"><a href="#">Project</a></li>
+                    <li class="breadcrumb-item"><a ui-sref="project">Projects</a></li>
                     <li class="breadcrumb-item active">Add Project</li>
                 </ol>
             </div>
@@ -27,7 +27,7 @@
                                                 <div class="all-form-section">
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Project Name</label></div>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right"><label>Project Name</label></div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                                                 <div class="form-group">
                                                                     <input type="text" class="form-control" id="exampleInputuname_3" ng-model="project.project_name" placeholder="Name" >
@@ -38,7 +38,7 @@
                                                     <?php if ($this->session->userdata("user_type") == 'ADMIN') { ?>
                                                         <div class="row">
                                                             <div class="element-form">
-                                                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Choose Client</label></div>
+                                                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right"><label>Choose Client</label></div>
                                                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                     <div class="form-group">
                                                                         <select class="form-control" data-placeholder="Choose Client" ng-model="project.client_id">
@@ -54,7 +54,7 @@
                                                     <?php } ?>
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Comment</label></div>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right"><label>Note</label></div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                                                 <div class="form-group">
                                                                     <textarea class="form-control" rows="2" ng-model="project.comment"></textarea>
@@ -64,8 +64,8 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right">
-                                                                <button class="btn btn-info btn-success" ng-disabled="project.project_name == ''" ng-click="saveType == 'SAVE' ? saveNewProjectDetails() : updateProjectDetails()">{{ saveType}}</button>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right">
+                                                                <button class="btn btn-info btn-success" ng-disabled="project.project_name == ''" ng-click="saveType == 'SAVE' ? saveNewProjectDetails() : updateProjectDetails()">Add</button>
                                                             </div>
 
                                                         </div

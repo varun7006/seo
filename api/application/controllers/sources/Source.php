@@ -1,5 +1,7 @@
 <?php
-
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('memory_limit', '-1');
 defined('BASEPATH') OR exit('No direct script access allowed');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
@@ -51,8 +53,10 @@ class Source extends MY_Controller {
         $toLimit = $this->input->post("to_limit");
         $sourceList = $this->modelObj->getSourceList($fromLimit, $toLimit);
         if ($sourceList["status"] == "SUCCESS") {
+            $sourceLiveStatusResult = $this->modelObj->getsourceLiveStatus();
             foreach ($sourceList['value']['list'] as $key => $value) {
                 $sourceList['value']['list'][$key]['exact_link'] = $value['source_link'];
+                $sourceList['value']['list'][$key]['live_status'] = isset($sourceLiveStatusResult[$value['id']]) ? $sourceLiveStatusResult[$value['id']] : 'ONLINE';
                 $projectArr = explode(",", $value['project_id']);
                 if (count($projectArr) > 0) {
                     $projectStr = "";
@@ -133,7 +137,9 @@ class Source extends MY_Controller {
             $tagList = array();
             $tagList = $this->modelObj->getTagList();
             if (!in_array($dataArr['topics'], $tagList['value'])) {
-                $saveTagResult = $this->modelObj->saveNewTag(array("tag" => $dataArr['topics']));
+                if ($dataArr['topics'] != '' && $dataArr['topics'] != null) {
+                    $saveTagResult = $this->modelObj->saveNewTag(array("tag" => $dataArr['topics']));
+                }
             }
         }
         echo json_encode($saveResult);
@@ -148,10 +154,19 @@ class Source extends MY_Controller {
             $projectArr = $dataArr['project_id'];
             $projectArrStr = implode(",", $dataArr['project_id']);
             $dataArr['project_id'] = $projectArrStr;
-            $updateSourceProject = $this->updateSourceProjectDetails($updateId, $projectArr, $dataArr['source_link']);
+            $updateSourceProject = $this->updateSourceProjectDetails($updateId, $projectArr, $dataArr['source_link'],$dataArr);
         }
         if ($updateId != null && $updateId != '') {
             $updateResult = $this->modelObj->updateSourceDetails($dataArr, $updateId);
+            if (isset($dataArr['topics'])) {
+                $tagList = array();
+                $tagList = $this->modelObj->getTagList();
+                if (!in_array($dataArr['topics'], $tagList['value'])) {
+                    if ($dataArr['topics'] != '' && $dataArr['topics'] != null) {
+                        $saveTagResult = $this->modelObj->saveNewTag(array("tag" => $dataArr['topics']));
+                    }
+                }
+            }
             echo json_encode($updateResult);
         }
     }
@@ -170,7 +185,7 @@ class Source extends MY_Controller {
         return true;
     }
 
-    public function updateSourceProjectDetails($source_id, $projectArr, $sourceLink) {
+    public function updateSourceProjectDetails($source_id, $projectArr, $sourceLink,$dataArr) {
         $this->db->select("*");
         $this->db->from("link_status_report");
         $this->db->where("status", "TRUE");
@@ -185,7 +200,7 @@ class Source extends MY_Controller {
             $backLinkInsertArr = array();
             foreach ($projectArr as $projectId) {
                 if (!in_array($projectId, $previousProjectArr)) {
-                    $backLinkInsertArr[] = array("backlink" => $sourceLink, "source_id" => $source_id, "project_id" => $projectId, "date" => date("Y-m-d"));
+                    $backLinkInsertArr[] = array("backlink" => $sourceLink, "source_id" => $source_id, "project_id" => $projectId,"name"=>$dataArr['name'],"email"=>$dataArr['email'] , "date" => date("Y-m-d"));
                 }
             }
             foreach ($previousProjectArr as $projectId) {
@@ -201,7 +216,7 @@ class Source extends MY_Controller {
         } else {
             $backLinkInsertArr = array();
             foreach ($projectArr as $key => $projectId) {
-                $backLinkInsertArr[] = array("backlink" => $sourceLink, "source_id" => $source_id, "project_id" => $projectId, "date" => date("Y-m-d"));
+                $backLinkInsertArr[] = array("backlink" => $sourceLink, "source_id" => $source_id, "project_id" => $projectId,"name"=>$dataArr['name'],"email"=>$dataArr['email'] ,"date" => date("Y-m-d"));
             }
             if (count($backLinkInsertArr) > 0) {
                 $this->db->insert_batch("link_status_report", $backLinkInsertArr);
@@ -254,26 +269,53 @@ class Source extends MY_Controller {
                 $sourceList['value']['list'][$key]['source_link'] = $this->getDomainName($value['source_link']);
             }
         }
-        $table = "";
         if ($sourceList['status'] == 'SUCCESS' && $sourceList['value']['count'] > 0) {
+            $objPHPExcel = new PHPExcel();
 
-            $table = "<table><tr><th>#</th><th>Source</th><th>Email</th><th>Name</th><th>Topics</th><th>PA</th><th>DA</th><th>Moz Rank</th><th>Project</th><th>Link Type</th><th>Comment</th></tr>";
-
-            foreach ($sourceList['value']['list'] as $key => $value) {
-                $table .= "<tr><td>" . ($key + 1) . "</td>";
-                $table .= "<td>" . $value['source_link'] . "</td>";
-                $table .= "<td>" . $value['email'] . "</td>";
-                $table .= "<td>" . $value['name'] . "</td>";
-                $table .= "<td>" . $value['topics'] . "</td>";
-                $table .= "<td>" . $value['pa'] . "</td>";
-                $table .= "<td>" . $value['da'] . "</td>";
-                $table .= "<td>" . $value['moz_rank'] . "</td>";
-                $table .= "<td>" . $value['link_type'] . "</td>";
-                $table .= "<td>" . $value['comment'] . "</td>";
-                $table .= "</tr>";
+            $objWorkSheet = $objPHPExcel->createSheet(0);
+            $row = 1;
+            $col = 0;
+            $headingArr = array("S.No", "Source", "Email", "Name", "Topics", "PA", "DA", "Moz Rank", "Project", "Link Type", "Note");
+            foreach ($headingArr as $key => $value) {
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value);
+                $col++;
             }
-            $table .= "</table>";
-            $excelResult = $this->coreObj->getReportDataTypeWiseExcel($table, "exported_sources.xlsx");
+            $row++;
+            foreach ($sourceList['value']['list'] as $key => $value) {
+                $col = 0;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, ($key + 1));
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['source_link']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['email']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['name']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['topics']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['pa']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['da']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['moz_rank']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['link_type']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['comment']);
+                $row++;
+            }
+
+
+            $objPHPExcel->setActiveSheetIndex(0);
+            $fileName = 'exported_sources.xlsx';
+            if (ob_get_contents())
+                ob_end_clean();
+            header('Content-type: application/vnd.ms-excel');
+            header("Content-Disposition: attachment;filename=$fileName");
+            header("Cache-Control: max-age=0");
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+            $objWriter->save('php://output');
+            exit;
         } else {
             echo "There are no sources present";
         }

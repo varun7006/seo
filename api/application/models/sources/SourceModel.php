@@ -29,6 +29,20 @@ class SourceModel extends CI_Model {
         }
     }
     
+    public function getsourceLiveStatus() {
+        $query = "SELECT a.source_id,a.type FROM `broken_source_details` as `a` WHERE `a`.`last_checked_date` = '".date("Y-m-d")."'";
+        $result = $this->db->query($query)->result_array();
+        if(count($result) > 0){
+            $returnArr = array();
+            foreach ($result as $key => $value) {
+                $returnArr[$value['source_id']] = $value['type'];
+            }
+            return $returnArr;
+        }else{
+            return [];
+        }
+    }
+    
     public function getSourceListExcel() {
         if ($this->session->user_type == 'CLIENT') {
             $query = "SELECT `a`.*, `b`.`name` as `username`, `c`.`pa`, `c`.`da`, `c`.`moz_rank`, `c`.`citation_flow`, `c`.`trust_flow`, `c`.`category`,`e`.`name` as link_type FROM `source` as `a` LEFT JOIN `users` as `b` ON `a`.`user_id` = `b`.`id` LEFT JOIN `seo_data` as `c` ON `a`.`id` = `c`.`source_id`  LEFT JOIN `link_types` as `e` ON `a`.`link_type` = `e`.`id` WHERE `a`.`status` = 'TRUE' AND (`c`.`status`='TRUE' OR `c`.`status` is null) AND (`e`.`status`='TRUE' OR `e`.`status` is null) AND `a`.`user_id`='" . $this->session->user_id . "'";
@@ -64,6 +78,7 @@ class SourceModel extends CI_Model {
     public function getTagList() {
         $this->db->select("a.*");
         $this->db->from("tags as a");
+        $this->db->where("status", "TRUE");
         $result = $this->db->get()->result_array();
         if ($result > 0) {
             $finalArr = array();

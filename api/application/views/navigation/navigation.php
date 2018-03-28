@@ -8,24 +8,16 @@
         </div>
         <div class="col-sm-8 col-xl-10 header-right">
             <div class="header-inner-right">
-                <div class="float-default searchbox">
-                    <div class="right-icon">
-                        <a href="javascript:void(0)">
-                            <i class="icon_search"></i>
-                        </a>
-                    </div>
-                </div>
-
                 <div class="user-dropdown">
                     <div class="btn-group">
                         <a  class="user-header dropdown-toggle" data-toggle="dropdown" data-animation="slideOutUp" aria-haspopup="true" aria-expanded="false">
-                            <img src="assets/global/image/user.jpg" alt="Profile image" />
+                            <img src="assets/global/image/User_Avatar.png" alt="Profile image" />
                         </a>
                         <div class="dropdown-menu drop-profile">
                             <div class="userProfile">
-                                <img src="assets/global/image/user.jpg" alt="Profile image" />
-                                <h5>Miler Hussey</h5>
-                                <p>milerhussey@yahoo.com</p>
+                                <img src="assets/global/image/User_Avatar.png" alt="Profile image" />
+                                <h5>{{ loginName }}</h5>
+                                <p>{{ loginEmail }}</p>
                             </div>
                             <div class="dropdown-divider"></div>
 
@@ -37,49 +29,6 @@
         </div>
     </div>
 </header>
-<div class="search-overlay " >
-    <div class="float-default search">
-        <div class="search_bg"></div>
-        <div class="right-icon search_box">
-            <div class="search-div">
-                <input type="text" class="search_input">
-                <label class="search-input-label">
-                    <span class="input-label-title">Search</span>
-                </label>
-            </div>
-            <div class="divider50"></div>
-            <div class="search-result">
-                <div class="search-item">
-                    <div class="search-image float-xs-left">
-                        <img src="assets/global/image/guitar.jpg" alt="search-image">
-                    </div>
-                    <div class="search-info float-xs-right">
-                        <h3 class="title">Search here</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus diam quis arcu lobortis sagittis. Etiam eu ornare mi. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-                    </div>
-                </div>
-                <div class="divider15"></div>
-                <div class="search-item">
-                    <div class="search-info search-full float-xs-right">
-                        <h3 class="title">Admin templates</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus diam quis arcu lobortis sagittis. Etiam eu ornare mi. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-                    </div>
-                </div>
-                <div class="divider15"></div>
-                <div class="search-item">
-                    <div class="search-image float-xs-left">
-                        <img src="assets/global/image/book-flower.jpg" alt="search-image">
-                    </div>
-                    <div class="search-info float-xs-right">
-                        <h3 class="title">Books</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus diam quis arcu lobortis sagittis. Etiam eu ornare mi. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="search_close icon_close"></div>
-    </div>
-</div>
 <aside id="sidebar">
     <div class="sidebar-menu">
         <?php 
@@ -93,7 +42,7 @@
                 </li>
                 <li class="sub-item">
                     <a href="javascript:void(0)" ui-sref=users>
-                        <i class="icon_tags_alt"></i>
+                        <i class="icon_id"></i>
                         <span>Client</span>
                     </a>
                     <ul class="sub-menu">
@@ -126,7 +75,7 @@
                 </li>
                 <li class="sub-item">
                     <a href="javascript:void(0)" ui-sref=project>
-                        <i class="icon_tags_alt"></i>
+                        <i class="icon_ribbon_alt"></i>
                         <span>Project</span>
                     </a>
                     <ul class="sub-menu">
@@ -140,11 +89,11 @@
                     </ul>
                 </li>
                 <li class="sub-item">
-                    <a href="javascript:void(0)">
-                        <i class="icon_tags_alt"></i>
+                    <a href="javascript:void(0)" ui-sref=composemail>
+                        <i class="icon_mail_alt"></i>
                         <span>Mail</span>
                     </a>
-                    <ul class="sub-menu">
+<!--                    <ul class="sub-menu">
                         <li class="menu-title"><span>Mail</span></li>
                         <li>
                             <a ui-sref=composemail>Compose</a>
@@ -152,11 +101,11 @@
                         <li>
                             <a ui-sref=inbox>Inbox</a>
                         </li>
-                    </ul>
+                    </ul>-->
                 </li>
                 <li class="sub-item">
                     <a href="javascript:void(0)">
-                        <i class="icon_tags_alt"></i>
+                        <i class="icon_wallet"></i>
                         <span>Settings</span>
                     </a>
                     <ul class="sub-menu">

@@ -28,7 +28,7 @@
                                                 <div class="all-form-section">
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Task Name</label></div>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right"><label>Task Name</label></div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                                                 <div class="form-group">
                                                                     <input type="text" class="form-control" id="exampleInputuname_3" ng-model="task.task_name" placeholder="Name" >
@@ -38,7 +38,7 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Date</label></div>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right"><label>Date</label></div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
                                                                     <div class="datepicker" date-format="{{'dd-MM-yyyy'}}" style="height: 300px !important; width: 300px !important;" >
@@ -52,8 +52,8 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right">
-                                                                <button class="btn btn-info btn-success" ng-disabled="task.task_name == '' || task.date == ''" ng-click="saveType == 'SAVE' ? saveNewTask() : updateUserDetails()">{{ saveType}}</button>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right">
+                                                                <button class="btn btn-info btn-success" ng-disabled="task.task_name == '' || task.date == ''" ng-click="saveType == 'SAVE' ? saveNewTask() : updateUserDetails()">Add</button>
                                                             </div>
 
                                                         </div

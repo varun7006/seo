@@ -3,15 +3,18 @@
     angular
             .module('app')
             .controller('brokenSourcesCtrl', brokenSourcesCtrl);
-    brokenSourcesCtrl.$inject = ['$scope', '$http', '$state','$sce'];
-    function brokenSourcesCtrl($scope, $http, $state,$sce) {
+    brokenSourcesCtrl.$inject = ['$scope', '$http', '$state', '$sce'];
+    function brokenSourcesCtrl($scope, $http, $state, $sce) {
         $scope.source = {'name': '', 'user_id': '', 'email': '', 'source_link': '', 'mobile_no': '', 'topics': '', 'link_status': ''};
         $scope.sourceList = [];
         $scope.alertArr = {'name': 'Source Name', 'user_id': 'Source User', 'email': 'Source Email', 'source_link': 'Source Link', 'mobile_no': 'Mobile No', 'topics': 'Topics', 'link_status': 'Link Status'};
         $scope.userList = [];
         $scope.showNewSource = false;
         $scope.brokenSourceCount = 0;
-       
+        $scope.showAlert = false;
+        $scope.alertText = "";
+        $scope.alertIcon = "";
+        $scope.alertClass = "";
         $scope.updateId = 0;
         $scope.index = 0;
         $scope.saveType = "SAVE";
@@ -29,7 +32,6 @@
             }).then(function (jsondata) {
                 if (jsondata.data.status == 'SUCCESS') {
                     $scope.sourceList = jsondata.data.value.list;
-                    
                     $scope.brokenSourceCount = jsondata.data.value.count;
                 }
 
@@ -38,6 +40,12 @@
 
         $scope.getBrokenSourceList();
 
+        $scope.hideAlert = function () {
+            $scope.showAlert = false;
+            $scope.alertText = "";
+            $scope.alertIcon = "";
+            $scope.alertClass = "";
+        }
 
         $scope.deleteSource = function (id, index) {
             $scope.updateId = id;
@@ -51,10 +59,18 @@
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).then(function (jsondata) {
                     $scope.isAjax = true;
-                    alert(jsondata.data.msg)
                     if (jsondata.data.status == 'SUCCESS') {
+                        $scope.showAlert = true;
+                        $scope.alertText = jsondata.data.msg;
+                        $scope.alertIcon = "fa-check";
+                        $scope.alertClass = "alert-success";
                         $scope.sourceList.splice(index, 1);
                         $scope.brokenSourceCount = $scope.brokenSourceCount - 1;
+                    } else {
+                        $scope.showAlert = true;
+                        $scope.alertText = jsondata.data.msg;
+                        $scope.alertIcon = "fa-times-circle";
+                        $scope.alertClass = "alert-danger";
                     }
                 });
             }

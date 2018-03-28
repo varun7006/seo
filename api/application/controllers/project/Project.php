@@ -49,20 +49,45 @@ class Project extends MY_Controller {
     public function generateProjectExcel() {
         $projectList = $this->modelObj->getProjectList();
         if ($projectList['status'] == 'SUCCESS' && $projectList['value']['count'] > 0) {
-            
-          $table = "<table><tr><th>#</th><th>Project Name</th><th>Client Name</th><th>Comment</th><th>Completed Links</th><th>Broken Links</th></tr>";
-          
-          foreach ($projectList['value']['list'] as $key => $value) {
-                $table .= "<tr><td>".($key+1)."</td>";
-                $table .= "<td>".$value['project_name']."</td>";
-                $table .= "<td>".$value['client_name']."</td>";
-                $table .= "<td>".$value['comment']."</td>";
-                $table .= "<td>".$value['completed_links']."</td>";
-                $table .= "<td>".$value['broken_links']."</td>";
-                $table .= "</tr>";
+            $objPHPExcel = new PHPExcel();
+
+            $objWorkSheet = $objPHPExcel->createSheet(0);
+            $row = 1;
+            $col = 0;
+            $headingArr = array("S.No","Project","Client","Note","Completed Links","Broken Links");
+            foreach ($headingArr as $key => $value) {
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value);
+                $col++;
             }
-            $table .= "</table>";
-            $excelResult = $this->coreObj->getReportDataTypeWiseExcel($table, "projectlist.xlsx");
+            $row++;
+            foreach ($projectList['value']['list'] as $key => $value) {
+                $col = 0;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, ($key + 1));
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['project_name']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['client_name']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['comment']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['completed_links']);
+                $col++;
+                $objWorkSheet->setCellValueByColumnAndRow($col, $row, $value['broken_links']);
+                $col++;
+                $row++;
+            }
+
+
+            $objPHPExcel->setActiveSheetIndex(0);
+            $fileName = 'projectlist.xlsx';
+            if (ob_get_contents())
+                ob_end_clean();
+            header('Content-type: application/vnd.ms-excel');
+            header("Content-Disposition: attachment;filename=$fileName");
+            header("Cache-Control: max-age=0");
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+            $objWriter->save('php://output');
+            exit;
         }else{
             echo "No Client Found";
             exit;

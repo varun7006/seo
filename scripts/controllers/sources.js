@@ -167,7 +167,7 @@
                 data: 'data=' + encodeURIComponent(angular.toJson($scope.source)),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function (jsondata) {
-//                alert(jsondata.data.msg)
+                $scope.tag.selected = "";
                 if (jsondata.data.status == 'SUCCESS') {
                     $scope.showAlert = true;
                     $scope.alertText = jsondata.data.msg;
@@ -200,16 +200,17 @@
 
         $scope.editSource = function (sourceObj, index) {
             sourceObj.editMode = true;
-            var projectArr = sourceObj.project_id
-//            $scope.multipleDemo.colors2 = ['Blue','Red'];
-//            $scope.sourceList[index].project_id = [];
-//            angular.forEach(projectArr, function (value, key) {
-//                angular.forEach($scope.projectList, function (val, k) {
-//                    if (val.id == value) {
-//                        $scope.sourceList[index].project_id.push(val)
-//                    }
-//                });
-//            });
+            var projectArr = sourceObj.project_id;
+            $scope.sourceList[index].project_id = [];
+            angular.forEach(projectArr, function (value, key) {
+                angular.forEach($scope.projectList, function (v, k) {
+                    if (value == v.id) {
+                        $scope.sourceList[index].project_id.push(v);
+                    } else if (value.id == v.id) {
+                        $scope.sourceList[index].project_id.push(v);
+                    }
+                })
+            });
             $scope.saveType = "UPDATE";
             $scope.updateId = sourceObj.id;
             $scope.index = index;
@@ -228,10 +229,11 @@
             $scope.source.link_target = sourceObj.link_target;
             $scope.source.link_status = sourceObj.link_status;
             $scope.source.comment = sourceObj.comment;
+            $scope.source.project_id = [];
             angular.forEach(sourceObj.project_id, function (value, key) {
                 $scope.source.project_id.push(value.id)
             });
-
+            $scope.source.topics = $scope.tag.selected;
 
             $http({
                 method: 'POST',
@@ -328,6 +330,10 @@
 
         $scope.projectList();
 
+        window.onscroll = function () {
+            myFunction()
+        };
+
 
         // Multiple Tagging 
 
@@ -399,7 +405,7 @@
             }
             reader.readAsDataURL(element.files[0]);
         }
-
+        $scope.modalStyle = "none";
         $scope.saveExcelData = function () {
 
             if ($scope.files.length > 0) {
@@ -422,6 +428,7 @@
                 }
 
             }).then(function (jsondata) {
+                document.getElementById("cancelmodal").click();
                 if (jsondata.data.status == 'SUCCESS') {
                     $scope.showAlert = true;
                     $scope.alertText = jsondata.data.msg;

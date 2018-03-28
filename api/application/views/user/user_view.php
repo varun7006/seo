@@ -7,10 +7,10 @@
                 <ol class="breadcrumb float-xs-right">
                     <li class="breadcrumb-item">
                         <span class="fs1" aria-hidden="true" data-icon=""></span>
-                        <a href="#">Home</a>
+                        <a ui-sref="dashboard">Home</a>
                     </li>
-                    <li class="breadcrumb-item"><a href="#">Users</a></li>
-                    <li class="breadcrumb-item active">User List</li>
+                    <li class="breadcrumb-item"><a ui-sref="users">Clients</a></li>
+                    <li class="breadcrumb-item active">Client List</li>
                 </ol>
             </div>
             <div class="contain-inner dashboard_v4-page" ng-if="showNewUser == true">
@@ -28,7 +28,7 @@
                                                 <div class="all-form-section">
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Name</label></div>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right"><label>Name</label></div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                                                 <div class="form-group">
                                                                     <input type="text" class="form-control" id="exampleInputuname_3" ng-model="user.name" placeholder="Name" ng-pattern="/^[A-Za-z ]*$/" >
@@ -38,10 +38,10 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Email</label></div>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right"><label>Email</label></div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
-                                                                    <input type="email" class="form-control" id="exampleInputEmail_3" name="email" ng-model="user.email" placeholder="Enter email" ng-pattern = "/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/">
+                                                                    <input type="email" class="form-control" id="exampleInputEmail_3" name="email" ng-model="user.email" placeholder="Email" ng-pattern = "/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/">
                                                                 </div>
                                                                 <span style="color:Red" ng-show="signupForm.email.$dirty && signupForm.email.$error.pattern">Please Enter Valid Email</span>
 
@@ -50,50 +50,50 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Phone No</label></div>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right"><label>Phone No</label></div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
-                                                                    <input type="text" class="form-control" id="exampleInputweb_31" ng-model="user.mobile_no" placeholder="Enter Phone No"  >
+                                                                    <input type="text" class="form-control" id="exampleInputweb_31" ng-model="user.mobile_no" placeholder="Phone No"  >
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Address</label></div>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right"><label>Address</label></div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
-                                                                    <input type="text" class="form-control" id="exampleInputweb_31" ng-model="user.address" placeholder="Enter Address">
+                                                                    <input type="text" class="form-control" id="exampleInputweb_31" ng-model="user.address" placeholder="Address">
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Website</label></div>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right"><label>Website</label></div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
-                                                                    <input type="text" class="form-control" id="exampleInputweb_31" ng-model="user.website" placeholder="Enter Website Name">
+                                                                    <input type="text" class="form-control" id="exampleInputweb_31" ng-model="user.website" placeholder="Website Name">
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Comment</label></div>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right"><label>Note</label></div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
-                                                                    <textarea class="form-control" rows="2" ng-model="user.comment"></textarea>
+                                                                    <textarea class="form-control" rows="2" ng-model="user.comment" placeholder="Note"></textarea>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Password</label></div>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right"><label>Password</label></div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
-                                                                    <input type="password" class="form-control" id="exampleInputpwd_32" ng-model="user.password" placeholder="Enter pwd">
+                                                                    <input type="password" class="form-control" id="exampleInputpwd_32" ng-model="user.password" placeholder="Password">
 
                                                                 </div>
                                                             </div>
@@ -101,10 +101,10 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right"><label>Re-Password</label></div>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right"><label>Re-Password</label></div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
-                                                                    <input type="password" class="form-control" id="exampleInputpwd_4" ng-model="user.repassword" placeholder="Re Enter pwd">
+                                                                    <input type="password" class="form-control" id="exampleInputpwd_4" ng-model="user.repassword" placeholder="Re  pwd">
 
                                                                 </div>
                                                             </div>
@@ -112,8 +112,8 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="element-form">
-                                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 text-xs-right">
-                                                                <button class="btn btn-info btn-success" ng-click="saveType == 'SAVE' ? saveNewUserDetails() : updateUserDetails()">{{ saveType}}</button>
+                                                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12 text-xs-right">
+                                                                <button class="btn btn-info btn-success" ng-click="saveType == 'SAVE' ? saveNewUserDetails() : updateUserDetails()">{{ saveType == 'SAVE' ? 'Add' : saveType }}</button>
                                                             </div>
                                                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                 <button class="btn btn-info btn-danger" ng-click="cancelUser()">Cancel</button>
@@ -193,9 +193,9 @@
                                                         <th ng-click="orderByField = 'address'; reverseSort = !reverseSort" style="cursor: pointer !important;">Address
                                                             <span ng-show="orderByField == 'address'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
                                                         </th>
-                                                        <th>Comment<span ng-show="orderByField == 'comment'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
+                                                        <th>Note<span ng-show="orderByField == 'comment'"><span ng-show="!reverseSort"><i class="fa fa-arrow-up "></i></span><span ng-show="reverseSort"><i class="fa fa-arrow-down "></i></span></span></span>
                                                         </th>                                                       
-                                                        <th>Action</th>
+                                                        <th></th>
                                                     </tr>
 
                                                 </thead>
@@ -223,14 +223,14 @@
                                                             <input type="text" ng-show="user.editMode" name="address" class="form-control" ng-model="user.address" placeholder="Address" required="" />
                                                             </td>
                                                         <td ng-click="editUser(user, $index)">
-                                                            <span ng-hide="user.editMode">{{user.comment}}</span>
-                                                            <input type="text" ng-show="user.editMode" name="comment" class="form-control" ng-model="user.comment" placeholder="Comment" required="" />
+                                                            <span ng-hide="user.editMode">{{user.comment | limitTo: 20 }}</span>
+                                                            <input type="text" ng-show="user.editMode" name="comment" class="form-control" ng-model="user.comment" placeholder="Note" required="" />
                                                         </td>
                                                         <td>
-                                                            <button ng-hide="user.editMode" class="btn btn-mini btn-primary" ng-click="editUser(user, $index)" ><i class="fa fa-edit"></i></button>
-                                                            <button ng-hide="user.editMode" class="btn btn-mini btn-danger" ng-click="deleteUser(user.id, $index)" id="sa-warning"><i class="fa fa-close"></i></button>
-                                                            <button ng-show="user.editMode" class="btn btn-xs btn-primary" ng-click="updateUserDetails(user)" >Update</button>
-                                                            <button ng-show="user.editMode" class="btn btn-xs btn-danger" ng-click="cancelUser(user)" id="sa-warning">Cancel</button>
+                                                            <button style="padding:5px 5px !important;" ng-hide="user.editMode" class="btn btn-mini btn-primary" ng-click="editUser(user, $index)" ><i class="fa fa-edit"></i></button>
+                                                            <button style="padding:5px 5px !important;" ng-hide="user.editMode" class="btn btn-mini btn-danger" ng-click="deleteUser(user.id, $index)" id="sa-warning"><i class="fa fa-close"></i></button>
+                                                            <button style="padding:5px 5px !important;" ng-show="user.editMode" class="btn btn-xs btn-primary" ng-click="updateUserDetails(user)" >Update</button>
+                                                            <button style="padding:5px 5px !important;" ng-show="user.editMode" class="btn btn-xs btn-danger" ng-click="cancelUser(user)" id="sa-warning">Cancel</button>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -272,7 +272,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary"  ng-click="saveExcelData()">Save</button>
+                <button type="button" class="btn btn-primary"  ng-click="saveExcelData()">Add</button>
             </div>
         </div>
     </div>

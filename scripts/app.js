@@ -7,7 +7,7 @@
     'use strict';
     angular
             .module('app', [
-                'ui.router', 'ui.load', 'ui.select', 'ngSanitize', 'textAngular', '720kb.datepicker', 'ui.bootstrap',
+                'ui.router', 'ui.load', 'ui.select', 'ngSanitize','ngStorage', 'textAngular', '720kb.datepicker', 'ui.bootstrap',
             ])
             .directive('numbersOnly', function () {
                 return {

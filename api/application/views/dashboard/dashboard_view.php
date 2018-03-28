@@ -76,8 +76,11 @@
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Project Name</th>
-                                                            <th>Client Name</th>
+                                                            <th>Project</th>
+                                                            <th>Client</th>
+                                                            <th>Total</th>
+                                                            <th>Client</th>
+                                                            <th>Client</th>
                                                             <th>Completed Links This Month</th>
                                                             <th>Comment</th>
                                                         </tr>
@@ -107,7 +110,7 @@
                         <div class="content dashboard_v4_project_list">
                             <h4 class="page-content-title">Todo list
                                 <span style="float: right"><button type="button" ng-click="updateTaskDetails()" ng-show="bucketList.length > 0" class="btn btn-primary float-xs-right">Save</button></span>
-                                <span style="float: right;margin-right: 2%;"><button class="btn btn-rounded btn-mini btn-success" ng-click="addNewTask()">Add New</button></span>
+                                <span style="float: right;margin-right: 2%;"><button class="btn btn-rounded btn-mini btn-success" ng-click="addNewTask()">Add</button></span>
                                 
                             </h4>
                             <div class="divider15"></div>
@@ -130,7 +133,9 @@
                                                 <input value="None" id="checkbox-squared{{$index}}" ng-model="task.checked" name="check" type="checkbox" ng-click="checkTask(task,$index)">
                                                 <label for="checkbox-squared{{$index}}"></label>
                                                 <span>{{ task.task_name }}</span>
-                                                <span class="tag tag-pill tag-success float-xs-right">{{ task.date_diff > 0 ? task.date_diff + 'days left' : 'today'}} </span>
+                                                <span class="tag tag-pill tag-success float-xs-right" ng-show="task.date_diff > 3 ">{{ task.date_diff > 0  ? task.date_diff + 'days left' : 'today'}} </span>
+                                                <span class="tag tag-pill tag-warning float-xs-right" ng-show="task.date_diff > 1 && task.date_diff <= 3">{{ task.date_diff > 0  ? task.date_diff + 'days left' : 'today'}} </span>
+                                                <span class="tag tag-pill tag-danger float-xs-right" ng-show="task.date_diff <= 1">Less than a day left </span>
                                             </div>
                                         </li>
                                     </ul>
